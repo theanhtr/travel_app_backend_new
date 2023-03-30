@@ -4,7 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
-    <title>Travel App Change Password</title>
+    <title>Travel App</title>
+    <link rel = "icon" href = 
+        "{{URL::asset('/images/logo.svg')}}"
+        type = "image/svg">
     </head>
     <style> 
         .filter-white{
