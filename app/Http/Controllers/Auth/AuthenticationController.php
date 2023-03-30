@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Authentication;
+use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\LoginAuthenticationRequest;
 use App\Http\Requests\LogoutAuthenticationRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthenticationController extends Controller
 {
@@ -57,6 +59,30 @@ class AuthenticationController extends Controller
 
         return response()->json([
             'message' => 'loggout success'
+        ], 200);
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request) {
+        $password = $request -> password;
+        $newPassword = $request -> new_password;
+
+        /**
+         * @var User $user
+         */
+
+        $user = Auth::user();
+
+        if (!Hash::check($password, $user->password)) {
+            return response()->json([
+                'message' => 'Password not true!!!'
+            ], 400);
+        }
+
+        $user->password = Hash::make($newPassword);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password updated'
         ], 200);
     }
 }
