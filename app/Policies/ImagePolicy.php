@@ -2,18 +2,26 @@
 
 namespace App\Policies;
 
+use App\Helper\CheckRoleAdmin;
 use App\Models\User;
 use App\Models\Image;
 use Illuminate\Auth\Access\Response;
 
 class ImagePolicy
 {
+    public function before($user, $ability)
+    {
+        if (CheckRoleAdmin::checkRoleAdmin($user)) {
+            return true;
+        }
+    }
+    
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -21,7 +29,7 @@ class ImagePolicy
      */
     public function view(User $user, Image $image): bool
     {
-        //
+        return $user->id === $image->user_id;
     }
 
     /**
@@ -29,15 +37,7 @@ class ImagePolicy
      */
     public function create(User $user): bool
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Image $image): bool
-    {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class ImagePolicy
      */
     public function delete(User $user, Image $image): bool
     {
-        //
+        return $user->id === $image->user_id;
     }
 
     /**
@@ -53,7 +53,7 @@ class ImagePolicy
      */
     public function restore(User $user, Image $image): bool
     {
-        //
+        return $user->id === $image->user_id;
     }
 
     /**
@@ -61,6 +61,6 @@ class ImagePolicy
      */
     public function forceDelete(User $user, Image $image): bool
     {
-        //
+        return $user->id === $image->user_id;
     }
 }

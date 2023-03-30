@@ -19,11 +19,11 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/auth/auth.php';
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('/logout', [App\Http\Controllers\Auth\AuthenticationController::class, 'logout']) 
-        ->name('logout');
+    Route::post('/auth/logout', [App\Http\Controllers\Auth\AuthenticationController::class, 'logout']) 
+        ->name('auth.logout');
 
-    Route::put('/update-password', [App\Http\Controllers\Auth\AuthenticationController::class, 'updatePassword']) 
-        ->name('updatePassword');
+    Route::put('/auth/update-password', [App\Http\Controllers\Auth\AuthenticationController::class, 'updatePassword']) 
+        ->name('auth.updatePassword');
 
     require __DIR__ . '/users/user.php';
     require __DIR__ . '/users/user_information.php';
