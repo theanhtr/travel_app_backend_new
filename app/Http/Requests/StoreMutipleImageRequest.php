@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class StoreImageRequest extends FormRequest
+class StoreMutipleImageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,8 @@ class StoreImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            'set_avatar' => 'required|boolean'
+            'images' => 'required|array',
+            'images.*' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ];
     }
 
@@ -40,7 +40,7 @@ class StoreImageRequest extends FormRequest
 
     public function messages()
     {
-        return [    
+        return [
             
         ];
     }

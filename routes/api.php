@@ -26,5 +26,6 @@ Route::group(['middleware' => 'auth:api'], function () {
         ->name('updatePassword');
 
     require __DIR__ . '/users/user.php';
+    require __DIR__ . '/users/user_information.php';
+    require __DIR__ . '/image/image.php';
 });
-    
