@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::group([], function() {
+Route::group(['prefix' => 'auth', 'as' => 'auth.'], function() {
     Route::post('/login', [App\Http\Controllers\Auth\AuthenticationController::class, 'login'])
         ->name('login');
 

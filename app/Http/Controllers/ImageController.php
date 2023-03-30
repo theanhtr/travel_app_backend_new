@@ -18,8 +18,27 @@ class ImageController extends Controller
      * Display a listing of the resource.
      */
     public function index() {
+        $this->authorize('viewAny', Image::class);
+
         $images = Image::all();
         return response()->json(["status" => "success", "count" => count($images), "data" => $images]);
+    }
+
+    public function show($image_id) {
+        $image = Image::find($image_id);
+
+        if(!$image) {
+            return response()->json([
+                'message' => "Image not found !!!"
+            ], 400);
+        }
+
+        $this->authorize('view', $image);
+
+        return response()->json([
+            'message' => "Get image complete",
+            "path" => asset('uploads/' . $image->path)
+        ], 200);
     }
 
     public function upload(StoreImageRequest $request) {
@@ -29,29 +48,17 @@ class ImageController extends Controller
          * @var User $user
          */
 
+        $this->authorize('create', Image::class);
+
         $image = $request->file('image');
         $imageName = Str::random(32) . '_' . time() . '_' . $image->getClientOriginalName();
         $image->move(public_path('uploads'), $imageName);
         // asset('uploads' . $imageName)
-        $image = $user->images()->create([
+        $imageResult = $user->images()->create([
             'path' => $imageName
         ]);
 
-        if($request -> set_avatar) {
-            if ($user -> avatar_id) {
-                $user->images()->find($user->avatar_id)->delete();
-            }
-
-            $user -> avatar_id = $image -> id;
-            $user -> save();
-            return response()->json([
-                'message' => 'Set avatar success'
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'File uploaded successfully'
-            ], 200);
-        }
+        return $imageResult;
     }
 
     public function uploadMutipleImage(StoreMutipleImageRequest $request) {
@@ -61,52 +68,116 @@ class ImageController extends Controller
          * @var User $user
          */
 
+        $this->authorize('create', Image::class);
+
         $images = $request->file('images');
-        
+        $imagesResult = array();
+
         foreach($images as $image) {
             $imageName = Str::random(32) . '_' . time() . '_' . $image->getClientOriginalName();
 
             $image->move(public_path('uploads'), $imageName);
 
-            $user->images()->create([
+            $imageTemp = $user->images()->create([
                 'path' => $imageName
             ]);
+
+            array_push($imagesResult, $imageTemp);
         }
 
-        return response()->json([
-            'message' => 'File uploaded successfully',
-        ], 200);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Image $image)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Image $image)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateImageRequest $request, Image $image)
-    {
-        //
+        return $imagesResult;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Image $image)
+    public function destroy($image_id)
     {
-        //
+        $image = Image::find($image_id);
+
+        if(!$image) {
+            return response()->json([
+                'message' => "Image not found !!!"
+            ], 400);
+        }
+
+        $this->authorize('delete', $image);
+
+        Image::destroy($image->id);
+
+        return response()->json([
+            'message' => "Delete image complete"
+        ], 200);
+    }
+
+    public function showMyAvatar() {
+        $user = Auth::user();
+
+        /**
+         * @var User $user
+         */
+
+        $image = Image::find($user->avatar_id);
+
+        if(!$image) {
+            return response()->json([
+                'message' => "Avatar not set !!!"
+            ], 400);
+        }
+
+        $this->authorize('view', $image);
+
+        return response()->json([
+            'message' => "Get image complete",
+            "path" => asset('uploads/' . $image->path)
+        ], 200);
+    }
+
+    public function uploadMyAvatar(StoreImageRequest $request) {
+        $user = Auth::user();
+
+        /**
+         * @var User $user
+         */
+
+        $image = $this->upload($request);
+
+        if ($user -> avatar_id) {
+            $user->images()->find($user->avatar_id)->delete();
+        }
+
+        $user -> avatar_id = $image -> id;
+        $user -> save();
+
+        return response()->json([
+            'message' => 'Set avatar success'
+        ], 200);
+    }
+
+    public function deleteMyAvatar() {
+        $user = Auth::user();
+
+        /**
+         * @var User $user
+         */
+
+        $image = Image::find($user->avatar_id);
+
+        if(!$image) {
+            return response()->json([
+                'message' => "Avatar not set !!!"
+            ], 400);
+        }
+
+        $this->authorize('delete', $image);
+
+        Image::destroy($image->id);
+
+        $user -> avatar_id = null;
+        $user -> save();
+
+        return response()->json([
+            'message' => 'Delete avatar success'
+        ], 200);
     }
 }
