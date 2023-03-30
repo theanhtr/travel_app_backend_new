@@ -16,25 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group([], function() {
-    Route::post('/login', [App\Http\Controllers\Auth\AuthenticationController::class, 'login'])
-        ->name('login');
-
-    Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])
-        ->name('register');
-
-    Route::post('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'forgotPassword'])
-        ->name('forgotPassword');
-
-    Route::get('/reset-password/{token}', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'viewResetPassword'])
-        ->name('viewResetPassword');
-
-    Route::post('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'resetPassword'])
-        ->name('resetPassword');
-});
+require __DIR__ . '/auth/auth.php';
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/logout', [App\Http\Controllers\Auth\AuthenticationController::class, 'logout']) 
         ->name('logout');
-    Route::apiResource('users', App\Http\Controllers\UserController::class);
+
+    Route::put('/update-password', [App\Http\Controllers\Auth\AuthenticationController::class, 'updatePassword']) 
+        ->name('updatePassword');
+
+    require __DIR__ . '/users/user.php';
 });
+    

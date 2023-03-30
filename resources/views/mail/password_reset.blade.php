@@ -16,7 +16,7 @@
                 <table border="0" cellpadding="0" cellspacing="0" width="80%">
                     <tr>
                         <td align="center" style="padding-bottom: 30px;">
-                            <img src="{{ $logoUrl }}" alt="My App Logo" width="150" style="display: block;">\
+                            <img src="{{ $logoUrl }}" alt="My App Logo" width="150" style="display: block;">
                             <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
                                 width="1500.000000pt" height="1500.000000pt" viewBox="0 0 500.000000 500.000000"
                                 preserveAspectRatio="xMidYMid meet">
