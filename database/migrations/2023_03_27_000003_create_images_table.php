@@ -14,10 +14,6 @@ return new class extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('path');
-            $table->string('name')->nullable();
-            $table->integer('size');
-            $table->string('type');
-            $table->timestamp('deleted_at');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });

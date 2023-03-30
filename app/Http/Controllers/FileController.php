@@ -22,8 +22,9 @@ class FileController extends Controller
      */
     public function upload(StoreFileRequest $request) 
     {
-        $result = $request -> file('file') -> store('apiDocs');
-        return $this->success($result, 'upload file complete', 201);
+        $result = $request -> file('file') -> store('apiFiles');
+        return ["result" => $result];
+        // return $this->success($result, 'upload file complete', 201);
     }
 
     /**
