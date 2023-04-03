@@ -207,10 +207,32 @@ class HotelController extends Controller
 
         $id_amenities = SplitIdInString::splitIdInString($request->amenities);
 
-        $myHotel -> amenities() -> attach($id_amenities);
+        $myHotel -> amenities() -> syncWithoutDetaching($id_amenities);
 
         return response()->json([
             "success"
+        ], 200);
+    }
+
+    public function deleteAmenities(StoreMyHotelAmenitiesRequest $request) {
+        $user = Auth::user();
+
+        $myHotel = Hotel::where('user_id', $user->id)->first();
+
+        if(!$myHotel) {
+            return response()->json([
+                'error' => 'Hotel of manager isnt exist'
+            ], 400);
+        }
+
+        $this->authorize('createAmenities', $myHotel);
+
+        $id_amenities = SplitIdInString::splitIdInString($request->amenities);
+        
+        $myHotel -> amenities() -> detach($id_amenities);
+
+        return response()->json([
+            "delete success"
         ], 200);
     }
 }

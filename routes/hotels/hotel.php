@@ -37,13 +37,7 @@ Route::group(['prefix' => 'my-hotel', 'as' => 'my-hotel.'], function() {
         Route::post('/', [App\Http\Controllers\HotelController::class, 'addAmenities'])
             -> name('add');
 
-        Route::put('/', [App\Http\Controllers\HotelController::class, 'updateMe'])
-            -> name('update');
-
-        Route::patch('/', [App\Http\Controllers\HotelController::class, 'updateMe'])
-            -> name('update');
-
-        Route::delete('/', [App\Http\Controllers\HotelController::class, 'destroyMe'])
+        Route::delete('/', [App\Http\Controllers\HotelController::class, 'deleteAmenities'])
             -> name('delete');
     });
 });
