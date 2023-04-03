@@ -17,11 +17,11 @@ class GetRoleIdHelper {
 
     public static function getHotelManagerRoleId():int
     {
-        return Role::where('name', '=', 'Hotel manager')->first()->id;
+        return Role::where('name', '=', 'Hotel Manager')->first()->id;
     }
 
     public static function getAirlineManagerRoleId():int
     {
-        return Role::where('name', '=', 'Airline manager')->first()->id;
+        return Role::where('name', '=', 'Airline Manager')->first()->id;
     }
 }

@@ -20,6 +20,7 @@ Route::group(['prefix' => 'images', 'as' => 'images.'], function() {
                 ->name('uploadMutipleImage');
 });
 
+//my-avatar
 Route::group(['prefix' => 'my-avatar', 'as' => 'my-avatar.'], function() {
         Route::get('/', [App\Http\Controllers\ImageController::class, 'showMyAvatar']) 
                 ->name('show');

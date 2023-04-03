@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Role extends Model
+class Address extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['name'];
+    protected $fillable = ['specific_address', 'province_id', 'district_id', 'sub_district_id'];
 
-    public function users():HasMany
+    public function hotels():HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(Hotel::class);
     }
 }

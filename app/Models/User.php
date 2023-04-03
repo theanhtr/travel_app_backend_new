@@ -59,4 +59,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Image::class);
     }
+
+    public function hotel(): Relations\HasOne
+    {
+        return $this->hasOne(Hotel::class);
+    }
 }

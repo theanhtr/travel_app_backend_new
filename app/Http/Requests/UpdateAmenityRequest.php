@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class ResetPasswordRequest extends FormRequest
+class UpdateAmenityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,12 +21,13 @@ class ResetPasswordRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|confirmed',
-            'token' => 'required'
+            'name' => 'string',
+            'font_awesome_class' => 'string',
+            'description' => 'string',
+            'role_amenity_id' => 'numeric'
         ];
     }
 
@@ -38,15 +39,4 @@ class ResetPasswordRequest extends FormRequest
             'data'      => $validator->errors()
         ], 400));
     }
-
-    public function messages()
-    {
-        return [
-            'email.required' => 'Email is required',
-            'email.email' => 'Email is wrong',
-            'password.required' => 'Password is required',
-            'password.confirmed' => 'Password need confirm',
-            'token.required' => 'Token is required',
-        ];
-    }   
 }

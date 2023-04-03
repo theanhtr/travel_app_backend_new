@@ -1,6 +1,6 @@
 @php
     $logoUrl = asset('/images/logo.svg');
-    $confirmUrl = env('BASE_URL_HOME') . '/api/email-confirm/' . $user_id . '/' . $email;
+    $confirmUrl = env('BASE_URL_HOME') . '/api/auth/email-confirm/' . $user_id . '/' . $email;
 @endphp
 
 <!DOCTYPE html>

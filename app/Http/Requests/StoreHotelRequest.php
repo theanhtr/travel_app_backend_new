@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class ResetPasswordRequest extends FormRequest
+class StoreHotelRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,12 @@ class ResetPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|confirmed',
-            'token' => 'required'
+            'name' => 'required|string',
+            'description' => 'string',
+            'specific_address' => 'string',
+            'province_id' => 'required|numeric',
+            'district_id' => 'required|numeric',
+            'sub_district_id' => 'required|numeric',
         ];
     }
 
@@ -38,15 +41,5 @@ class ResetPasswordRequest extends FormRequest
             'data'      => $validator->errors()
         ], 400));
     }
-
-    public function messages()
-    {
-        return [
-            'email.required' => 'Email is required',
-            'email.email' => 'Email is wrong',
-            'password.required' => 'Password is required',
-            'password.confirmed' => 'Password need confirm',
-            'token.required' => 'Token is required',
-        ];
-    }   
 }
+

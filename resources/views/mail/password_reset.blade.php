@@ -1,6 +1,6 @@
 @php
     $logoUrl = asset('/images/logo.svg');
-    $resetUrl = env('BASE_URL_HOME') . '/api/reset-password/' . $token;
+    $resetUrl = env('BASE_URL_HOME') . '/api/auth/reset-password/' . $token;
 @endphp
 
 <!DOCTYPE html>
