@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Helper\GetRoleImageIdHelper;
 
 class ImageController extends Controller
 {
@@ -41,7 +42,7 @@ class ImageController extends Controller
         ], 200);
     }
 
-    public function upload(StoreImageRequest $request) {
+    public function upload(StoreImageRequest $request, $role_image_id) {
         $user = Auth::user();
 
         /**
@@ -55,13 +56,14 @@ class ImageController extends Controller
         $image->move(public_path('uploads'), $imageName);
         // asset('uploads' . $imageName)
         $imageResult = $user->images()->create([
-            'path' => $imageName
+            'path' => $imageName,
+            'role_image_id' => $role_image_id
         ]);
 
         return $imageResult;
     }
 
-    public function uploadMutipleImage(StoreMutipleImageRequest $request) {
+    public function uploadMutipleImage(StoreMutipleImageRequest $request, $role_image_id) {
         $user = Auth::user();
 
         /**
@@ -79,7 +81,8 @@ class ImageController extends Controller
             $image->move(public_path('uploads'), $imageName);
 
             $imageTemp = $user->images()->create([
-                'path' => $imageName
+                'path' => $imageName,
+                'role_image_id' => $role_image_id
             ]);
 
             array_push($imagesResult, $imageTemp);
@@ -140,7 +143,7 @@ class ImageController extends Controller
          * @var User $user
          */
 
-        $image = $this->upload($request);
+        $image = $this->upload($request, GetRoleImageIdHelper::getAvatarRoleImageId());
 
         if ($user -> avatar_id) {
             $user->images()->find($user->avatar_id)->delete();

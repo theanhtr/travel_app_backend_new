@@ -14,14 +14,22 @@ class Image extends Model
      */
     protected $fillable = [
         'path',
-        'name',
-        'size',
-        'type',
-        'deleted_at',
+        'role_image_id',
+        'hotel_id'
     ];
 
     public function user(): Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function roleImage():Relations\BelongsTo
+    {
+        return $this->belongsTo(RoleImage::class);    
+    }
+
+    public function hotel(): Relations\BelongsTo
+    {
+        return $this->belongsTo(Hotel::class);
     }
 }

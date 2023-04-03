@@ -27,5 +27,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     require __DIR__ . '/users/user.php';
     require __DIR__ . '/users/user_information.php';
-    require __DIR__ . '/image/image.php';
+    require __DIR__ . '/images/image.php';
+    require __DIR__ . '/addresses/address.php';
+    require __DIR__ . '/hotels/hotel.php';
+    require __DIR__ . '/amenities/amenity.php';
 });
