@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class StoreMyHotelAmenitiesRequest extends FormRequest
+class StoreTypeRoomRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,20 +21,13 @@ class StoreMyHotelAmenitiesRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            //"1,2,3": id amenities
-            'amenities' => 'required|string',
+            'name' => 'required|string',
+            'description' => 'string',
+            'price' => 'required|numeric',
+            'occupancy' => 'required|numeric',
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ], 400));
     }
 }

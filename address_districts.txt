@@ -1,3 +1,4 @@
+INSERT INTO districts (id,name,province_id) VALUES
 (760,'Quận 1',79),
 (761,'Quận 12',79),
 (770,'Quận 3',79),
@@ -702,4 +703,4 @@
 (971,'Năm Căn',96),
 (972,'Phú Tân',96),
 (973,'Ngọc Hiển',96),
-(769,'Thủ Đức',79),
+(769,'Thủ Đức',79);

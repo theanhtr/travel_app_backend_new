@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Helper\CheckRoleAdmin;
 use App\Helper\GetRoleIdHelper;
 use App\Models\Hotel;
+use App\Models\TypeRoom;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -46,12 +47,22 @@ class HotelPolicy
         return $user->id === $Hotel->user_id;
     }
 
+    public function createTypeRoom(User $user, Hotel $Hotel): bool
+    {
+        return $user->id === $Hotel->user_id;
+    }
+
     /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Hotel $Hotel): bool
     {
         return $user->id === $Hotel->user_id;
+    }
+
+    public function typeRoom(User $user, Hotel $Hotel, TypeRoom $typeRoom): bool
+    {
+        return $user->id === $Hotel->user_id && $Hotel->id === $typeRoom->hotel_id;
     }
 
     /**

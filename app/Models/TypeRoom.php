@@ -9,25 +9,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Hotel extends Model
+
+class TypeRoom extends Model
 {
     protected $fillable = 
     [
         'name', 
         'description', 
-        'min_price',
-        'max_price',
-        'address_id'
+        'price',
+        'occupancy',
+        'quantity_available'
     ];
 
-    public function user():BelongsTo
+    public function hotel():BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Hotel::class);
     }
 
-    public function address():BelongsTo
+    public function amenities(): BelongsToMany
     {
-        return $this->belongsTo(Address::class);
+        return $this->belongsToMany(Amenity::class, 'type_room_amenity', 'type_room_id', 'amenity_id');
     }
 
     public function images():HasMany
@@ -35,13 +36,8 @@ class Hotel extends Model
         return $this->hasMany(Image::class);
     }
 
-    public function amenities(): BelongsToMany
+    public function rooms():HasMany
     {
-        return $this->belongsToMany(Amenity::class, 'amenity_hotel', 'hotel_id', 'amenity_id');
-    }
-
-    public function typeRooms(): HasMany
-    {
-        return $this->hasMany(TypeRoom::class);
+        return $this->hasMany(Room::class);
     }
 }

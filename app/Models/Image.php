@@ -32,4 +32,9 @@ class Image extends Model
     {
         return $this->belongsTo(Hotel::class);
     }
+
+    public function typeRooms(): Relations\BelongsTo
+    {
+        return $this->belongsTo(TypeRoom::class);
+    }
 }
