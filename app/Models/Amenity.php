@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Mockery\Matcher\Type;
 
 class Amenity extends Model
 {
@@ -31,8 +32,8 @@ class Amenity extends Model
         return $this->belongsToMany(Amenity::class, 'amenity_hotel', 'amenity_id', 'hotel_id');
     }
 
-    public function rooms(): BelongsToMany
+    public function typeRooms(): BelongsToMany
     {
-        return $this->belongsToMany(Room::class);
+        return $this->belongsToMany(TypeRoom::class, 'type_room_amenity', 'amenity_id', 'type_room_id');
     }
 }

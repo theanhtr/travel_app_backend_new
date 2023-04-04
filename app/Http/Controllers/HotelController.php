@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\GetRoleIdHelper;
 use App\Helper\SplitIdInString;
-use App\Http\Requests\StoreMyHotelAmenitiesRequest;
+use App\Http\Requests\StoreUserAmenitiesRequest;
 use App\Models\Address;
 use App\Models\Hotel;
 use App\Http\Requests\StoreHotelRequest;
@@ -97,7 +97,6 @@ class HotelController extends Controller
             'name' => $request->name,
             'description' => $request->description ?? null,
             'address_id' => $address->id,
-            
         ]);
 
         return response()->json([
@@ -192,7 +191,7 @@ class HotelController extends Controller
         ], 200);
     }
 
-    public function addAmenities(StoreMyHotelAmenitiesRequest $request) {
+    public function addAmenities(StoreUserAmenitiesRequest $request) {
         $user = Auth::user();
 
         $myHotel = Hotel::where('user_id', $user->id)->first();
@@ -214,7 +213,7 @@ class HotelController extends Controller
         ], 200);
     }
 
-    public function deleteAmenities(StoreMyHotelAmenitiesRequest $request) {
+    public function deleteAmenities(StoreUserAmenitiesRequest $request) {
         $user = Auth::user();
 
         $myHotel = Hotel::where('user_id', $user->id)->first();
