@@ -28,6 +28,8 @@ class StoreTypeRoomRequest extends FormRequest
             'description' => 'string',
             'price' => 'required|numeric',
             'occupancy' => 'required|numeric',
+            //"1,2,3": id amenities
+            'amenities' => 'required|string',
         ];
     }
 }
