@@ -40,4 +40,15 @@ class TypeRoom extends Model
     {
         return $this->hasMany(Room::class);
     }
+
+    public static function boot() 
+    {
+        parent::boot();
+        static::deleting(function($typeRoom) {
+            $typeRoom->amenities()->detach();
+            $typeRoom->rooms->each(function($room){
+                $room->delete();
+             });
+        });
+    }
 }

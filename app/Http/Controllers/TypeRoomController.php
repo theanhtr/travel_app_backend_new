@@ -8,6 +8,7 @@ use App\Models\Hotel;
 use App\Models\TypeRoom;
 use App\Http\Requests\StoreTypeRoomRequest;
 use App\Http\Requests\UpdateTypeRoomRequest;
+use App\Http\Requests\UpdateTypeRoomPriceRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -101,14 +102,16 @@ class TypeRoomController extends Controller
             ], 400);
         }
         
-        $this->authorize('typeRoom', $myHotel);
+        $this->authorize('createTypeRoom', $myHotel);
 
-        $myHotel->typeRooms()->create([
+        $typeRoom = $myHotel->typeRooms()->create([
             'name' => $request->name,
             'description' => $request->description ?? null,
             'price' => $request->price,
             'occupancy' => $request->occupancy,
         ]);
+
+        $this->syncAmenities($myHotel, $typeRoom, $request -> amenities);
 
         return response()->json([
             'message' => 'Type room of hotel is stored'
@@ -158,8 +161,41 @@ class TypeRoomController extends Controller
 
         $typeRoom->save();
 
+        $this->syncAmenities($myHotel, $typeRoom, $request -> amenities);
+
         return response()->json([
             'message' => 'Type room is updated'
+        ], 200);
+    }
+
+    public function updateTypeRoomPrice($type_room_id, UpdateTypeRoomPriceRequest $request)
+    {
+        $user = Auth::user();
+
+        $myHotel = Hotel::where('user_id', $user->id)->first();
+
+        if(!$myHotel) {
+            return response()->json([
+                'error' => 'Hotel of manager isnt exist'
+            ], 400);
+        }
+
+        $typeRoom = TypeRoom::find($type_room_id);
+
+        if(!$typeRoom) {
+            return response()->json([
+                'error' => 'Type room isnt exist'
+            ], 400);
+        }
+
+        $this->authorize('typeRoom', [$myHotel, $typeRoom]);
+
+        $typeRoom->price = $request->price;
+
+        $typeRoom->save();
+
+        return response()->json([
+            'message' => 'Price of type room is updated'
         ], 200);
     }
 
@@ -187,7 +223,7 @@ class TypeRoomController extends Controller
         }
 
         $this->authorize('typeRoom', [$myHotel, $typeRoom]);
-
+        
         $typeRoom->delete();
 
         return response()->json([
@@ -195,69 +231,12 @@ class TypeRoomController extends Controller
         ], 200);
     }
 
-    public function addAmenities($type_room_id, StoreUserAmenitiesRequest $request) 
+    public function syncAmenities(Hotel $myHotel, TypeRoom $typeRoom, String $amenities) 
     {
-        $user = Auth::user();
-
-        $myHotel = Hotel::where('user_id', $user->id)->first();
-
-        if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
-        }
-
-        $this->authorize('createAmenities', $myHotel);
-
-        $typeRoom = TypeRoom::find($type_room_id);
-
-        if(!$typeRoom) {
-            return response()->json([
-                'error' => 'Type room isnt exist'
-            ], 400);
-        }
-
         $this->authorize('typeRoom', [$myHotel, $typeRoom]);
 
-        $id_amenities = SplitIdInString::splitIdInString($request->amenities);
+        $id_amenities = SplitIdInString::splitIdInString($amenities);
 
-        $typeRoom -> amenities() -> syncWithoutDetaching($id_amenities);
-
-        return response()->json([
-            "type room amenities success"
-        ], 200);
-    }
-
-    public function deleteAmenities($type_room_id, StoreUserAmenitiesRequest $request) 
-    {
-        $user = Auth::user();
-
-        $myHotel = Hotel::where('user_id', $user->id)->first();
-
-        if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
-        }
-
-        $this->authorize('createAmenities', $myHotel);
-
-        $typeRoom = TypeRoom::find($type_room_id);
-
-        if(!$typeRoom) {
-            return response()->json([
-                'error' => 'Type room isnt exist'
-            ], 400);
-        }
-
-        $this->authorize('typeRoom', [$myHotel, $typeRoom]);
-
-        $id_amenities = SplitIdInString::splitIdInString($request->amenities);
-        
-        $typeRoom -> amenities() -> detach($id_amenities);
-
-        return response()->json([
-            "delete type room amenities success"
-        ], 200);
+        $typeRoom -> amenities() -> sync($id_amenities);
     }
 }

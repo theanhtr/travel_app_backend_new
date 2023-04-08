@@ -31,5 +31,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     require __DIR__ . '/addresses/address.php';
     require __DIR__ . '/hotels/hotel.php';
     require __DIR__ . '/hotels/type_room.php';
+    require __DIR__ . '/hotels/room.php';
     require __DIR__ . '/amenities/amenity.php';
 });

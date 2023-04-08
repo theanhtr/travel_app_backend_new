@@ -44,4 +44,15 @@ class Hotel extends Model
     {
         return $this->hasMany(TypeRoom::class);
     }
+
+    public static function boot() 
+    {
+        parent::boot();
+        static::deleting(function($hotel) {
+            $hotel->amenities()->detach();
+            $hotel->typeRooms->each(function($typeRoom){
+                $typeRoom->delete();
+             });
+        });
+    }
 }

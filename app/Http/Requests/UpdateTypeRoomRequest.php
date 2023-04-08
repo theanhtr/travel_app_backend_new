@@ -28,6 +28,8 @@ class UpdateTypeRoomRequest extends FormRequest
             'description' => 'string',
             'price' => 'numeric',
             'occupancy' => 'numeric',
+            //"1,2,3": id amenities
+            'amenities' => 'required|string',
         ];
     }
 }

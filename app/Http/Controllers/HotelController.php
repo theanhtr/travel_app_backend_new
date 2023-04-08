@@ -67,8 +67,13 @@ class HotelController extends Controller
         }
 
         $this->authorize('view', $myHotel);
-
-        return response()->json($myHotel, 200);
+        $amenities = $myHotel -> amenities() -> get();
+        return response()->json([
+            'data' => [
+                'hotel' => $myHotel,
+                'amenities' => $amenities
+            ]
+        ], 200);
     }
 
     public function createMe(StoreHotelRequest $request) 
@@ -164,8 +169,8 @@ class HotelController extends Controller
         
         $this->authorize('delete', $myHotel);
 
-        Hotel::destroy($myHotel->id);
-        Address::destroy($myHotel->address_id);
+        $myHotel -> delete();
+
         return response()->json([
             'message' => "Delete complete"
         ], 200);
