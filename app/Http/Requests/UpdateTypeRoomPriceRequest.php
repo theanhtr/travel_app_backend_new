@@ -3,8 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
-class StoreRoomRequest extends FormRequest
+class UpdateTypeRoomPriceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +24,7 @@ class StoreRoomRequest extends FormRequest
     public function rules()
     {
         return [
-            'type_room_id' => 'required|numeric',
-            'quantity' => 'required|numeric',
+            'price' => 'required|numeric',
         ];
     }
 }

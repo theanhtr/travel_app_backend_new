@@ -20,6 +20,9 @@ Route::group(['prefix' => 'my-hotel', 'as' => 'my-hotel.'], function() {
 
         Route::patch('/{type_room_id}', [App\Http\Controllers\TypeRoomController::class, 'updateTypeRoom'])
             -> name('update');
+    
+        Route::patch('/update-price/{type_room_id}', [App\Http\Controllers\TypeRoomController::class, 'updateTypeRoomPrice'])
+            -> name('update-price');
 
         Route::delete('/{type_room_id}', [App\Http\Controllers\TypeRoomController::class, 'deleteTypeRoom'])
             -> name('delete');

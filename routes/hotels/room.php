@@ -6,14 +6,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'my-hotel', 'as' => 'my-hotel.'], function() {
     Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function() {
-        Route::post('/', [App\Http\Controllers\RoomController::class, 'addRooms'])
+        Route::post('/add-rooms', [App\Http\Controllers\RoomController::class, 'addRooms'])
             -> name('add');
 
-        Route::post('/', [App\Http\Controllers\RoomController::class, 'changeAvailablity'])
-            -> name('changeAvailablity');
+        // Route::post('/delete-rooms', [App\Http\Controllers\RoomController::class, 'deleteRooms'])
+        //     -> name('delete');
 
-        Route::delete('/{type_room_id}', [App\Http\Controllers\RoomController::class, 'deleteRoom'])
-            -> name('delete');
+        Route::post('/change-availablity/{room_id}', [App\Http\Controllers\RoomController::class, 'changeAvailablity'])
+            -> name('changeAvailablity');
     });
 });
 

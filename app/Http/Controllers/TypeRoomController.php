@@ -8,6 +8,7 @@ use App\Models\Hotel;
 use App\Models\TypeRoom;
 use App\Http\Requests\StoreTypeRoomRequest;
 use App\Http\Requests\UpdateTypeRoomRequest;
+use App\Http\Requests\UpdateTypeRoomPriceRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -164,6 +165,37 @@ class TypeRoomController extends Controller
 
         return response()->json([
             'message' => 'Type room is updated'
+        ], 200);
+    }
+
+    public function updateTypeRoomPrice($type_room_id, UpdateTypeRoomPriceRequest $request)
+    {
+        $user = Auth::user();
+
+        $myHotel = Hotel::where('user_id', $user->id)->first();
+
+        if(!$myHotel) {
+            return response()->json([
+                'error' => 'Hotel of manager isnt exist'
+            ], 400);
+        }
+
+        $typeRoom = TypeRoom::find($type_room_id);
+
+        if(!$typeRoom) {
+            return response()->json([
+                'error' => 'Type room isnt exist'
+            ], 400);
+        }
+
+        $this->authorize('typeRoom', [$myHotel, $typeRoom]);
+
+        $typeRoom->price = $request->price;
+
+        $typeRoom->save();
+
+        return response()->json([
+            'message' => 'Price of type room is updated'
         ], 200);
     }
 
