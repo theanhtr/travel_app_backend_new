@@ -2,15 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMyInformationRequest;
+use App\Http\Requests\UpdateMyInformationRequest;
 use App\Models\User;
 use App\Models\UserInformation;
 use App\Http\Requests\StoreUserInformationRequest;
 use App\Http\Requests\UpdateUserInformationRequest;
+use App\Http\Requests\UserInformationRequest;
+use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserInformationController extends Controller
 {
+    use HttpResponse;
+    public function getUserById($user_id)
+    {
+        $this->authorize('checkAdmin', User::class);
+
+        $user = User::find($user_id);
+
+        return $user;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -18,7 +32,15 @@ class UserInformationController extends Controller
     {
         $this->authorize('viewAny', UserInformation::class);
 
-        return response()->json(UserInformation::all(), 200);
+        $userInformations = UserInformation::all();
+        $userInforamtionsCustom = array();
+
+        foreach($userInformations as $userInformation) {
+            $userInformation->email = $this->getUserById($userInformation->user_id) -> email;
+            array_push($userInforamtionsCustom, $userInformation);
+        }
+
+        return $this->success("Get all user information completed", $userInforamtionsCustom);
     }
 
     /**
@@ -31,15 +53,11 @@ class UserInformationController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if(!$user) {
-            return response()->json([
-                'error' => 'Information of user isnt exists'
-            ], 400);
+            return $this->failure('User of this email not found');
         }
 
         if(UserInformation::where('user_id', $user->id)->first()) {
-            return response()->json([
-                'error' => 'Information of user is exists'
-            ], 400);
+            return $this->failure('Information of user is exists');
         }
 
         $user->information()->create([
@@ -50,26 +68,27 @@ class UserInformationController extends Controller
             'email_contact' => $request->email_contact ?? null
         ]);
 
-        return response()->json([
-            'message' => 'Information of user is stored'
-        ], 200);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(UserInformation $userInformation)
-    {
-        $this->authorize('view', $userInformation);
-
-        return response()->json($userInformation, 200);
+        return $this->success('Information of user is stored');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserInformationRequest $request, UserInformation $userInformation)
+    public function update(UpdateUserInformationRequest $request)
     {
+        $this->authorize('viewAny', UserInformation::class);
+        $user = User::where('email', $request->email)->first();
+        
+        if(!$user) {
+            return $this->failure('User of this email not found');
+        }
+
+        $userInformation = UserInformation::where('user_id', $user->id)->first();
+
+        if(!$userInformation) {
+            return $this->failure("Information of user isn't exists");
+        }
+
         $this->authorize('update', $userInformation);
 
         if($request->first_name) {
@@ -94,23 +113,31 @@ class UserInformationController extends Controller
 
         $userInformation->save();
 
-        return response()->json([
-            'message' => 'Information of user is updated'
-        ], 200);
+        return $this->success('Information of user is updated');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UserInformation $userInformation)
+    public function destroy(UserInformationRequest $request)
     {
+        $user = User::where('email', $request->email)->first();
+        
+        if(!$user) {
+            return $this->failure('User of this email not found');
+        }
+
+        $userInformation = UserInformation::where('user_id', $user->id)->first();
+
+        if(!$userInformation) {
+            return $this->failure("Information of user isn't exists");
+        }
+
         $this->authorize('delete', $userInformation);
 
         UserInformation::destroy($userInformation->id);
 
-        return response()->json([
-            'message' => "Delete complete"
-        ], 200);
+        return $this->success("Delete complete");
     }
 
     public function showMe()
@@ -119,28 +146,49 @@ class UserInformationController extends Controller
         $userInformation = UserInformation::where('user_id', $user->id)->first();
 
         if(!$userInformation) {
-            return response()->json([
-                'error' => 'Information of user isnt exists'
-            ], 400);
+            return $this->failure("Information of user isn't exists");
         }
 
         $this->authorize('view', $userInformation);
 
-        return response()->json($userInformation, 200);
+        return $this->success("Get done", $userInformation);
+    }
+
+    public function createMe(StoreMyInformationRequest $request)
+    {
+        $user = Auth::user();
+
+        /**
+         * @var User $user
+         */
+
+        $userInformation = UserInformation::where('user_id', $user->id)->first();
+
+        if($userInformation) {
+            return $this->failure('Information of user is exists');
+        }
+
+        $user->information()->create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'phone_number' => $request->phone_number ?? null,
+            'date_of_birth' => $request->date_of_birth ?? null,
+            'email_contact' => $request->email_contact ?? null
+        ]);
+
+        return $this->success('Information of user is stored');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function updateMe(UpdateUserInformationRequest $request)
+    public function updateMe(UpdateMyInformationRequest $request)
     {
         $user = Auth::user();
         $userInformation = UserInformation::where('user_id', $user->id)->first();
 
         if(!$userInformation) {
-            return response()->json([
-                'error' => 'Information of user isnt exists'
-            ], 400);
+            return $this->failure("Information of user isn't exists");
         }
 
         $this->authorize('update', $userInformation);
@@ -167,9 +215,7 @@ class UserInformationController extends Controller
 
         $userInformation->save();
 
-        return response()->json([
-            'message' => 'Information of user is updated'
-        ], 200);
+        return $this->success('Information of user is updated');
     }
 
     /**
@@ -181,17 +227,13 @@ class UserInformationController extends Controller
         $userInformation = UserInformation::where('user_id', $user->id)->first();
 
         if(!$userInformation) {
-            return response()->json([
-                'error' => 'Information of user isnt exists'
-            ], 400);
+            return $this->failure("Information of user isn't exists");
         }
         
         $this->authorize('delete', $userInformation);
 
         UserInformation::destroy($userInformation->id);
 
-        return response()->json([
-            'message' => "Delete complete"
-        ], 200);
+        return $this->success("User information deleted");
     }
 }

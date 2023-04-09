@@ -11,10 +11,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\MailController;
+use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
+    use HttpResponse;
     public function register(RegisterNewCustomerRequest $request)
     {
         $user = User::create([
@@ -25,12 +27,9 @@ class RegisterController extends Controller
 
         $this->sendEmailConfirm($user->email, $user->id);
 
-        return response()->json([
-            'message' => 'Check email to confirm'
-        ], 200);
+        return $this->success('Check email to confirm', '', 200);
     }
 
-    
     public function sendEmailConfirm($email, $user_id) {
         MailController::sendEmail('mail.email_confirm', ['user_id' => $user_id, 'email' => $email], $email, 'Email Confirm');
     }
@@ -41,26 +40,26 @@ class RegisterController extends Controller
         ]);
     
         if ($validator->fails()) {
-            $errors = $validator->errors();
-
-            return response()->json([
-                'message' => $errors->first()
-            ], 400);
+            return $this->failure(
+                    'Invalid input parameter structure',
+                    $validator->errors(),
+                    500
+                );
         }
 
         $user = User::where('email', $request->email)->first();
         
         if(!$user) {
-            return response()->json([
-                'message' => 'Email not true !!!'
-            ], 400);
+            return $this->failure("No user found with this email", "", 400);
+        }
+
+        if($user -> email_verified_at != null) {
+            return $this->failure("This email is verified", "", 400);
         }
 
         $this->sendEmailConfirm($user->email, $user->id);
 
-        return response()->json([
-            'message' => 'Check email to confirm'
-        ], 200);
+        return $this->success('Check email to confirm', '', 200);
     }
 
     public function confirmedEmail($user_id, $email) {

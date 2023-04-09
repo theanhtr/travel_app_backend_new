@@ -8,6 +8,7 @@ use App\Http\Requests\StoreImageRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateImageRequest;
 use App\Models\User;
+use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ use App\Helper\GetRoleImageIdHelper;
 
 class ImageController extends Controller
 {
+    use HttpResponse;
     /**
      * Display a listing of the resource.
      */
@@ -123,17 +125,12 @@ class ImageController extends Controller
         $image = Image::find($user->avatar_id);
 
         if(!$image) {
-            return response()->json([
-                'message' => "Avatar not set !!!"
-            ], 400);
+            return $this->failure("Avatar not set");
         }
 
         $this->authorize('view', $image);
 
-        return response()->json([
-            'message' => "Get image complete",
-            "path" => asset('uploads/' . $image->path)
-        ], 200);
+        return $this->success("Get image complete", ["path" => asset('uploads/' . $image->path)]);
     }
 
     public function uploadMyAvatar(StoreImageRequest $request) {
@@ -152,9 +149,7 @@ class ImageController extends Controller
         $user -> avatar_id = $image -> id;
         $user -> save();
 
-        return response()->json([
-            'message' => 'Set avatar success'
-        ], 200);
+        return $this->success('Set avatar success');
     }
 
     public function deleteMyAvatar() {
@@ -167,9 +162,7 @@ class ImageController extends Controller
         $image = Image::find($user->avatar_id);
 
         if(!$image) {
-            return response()->json([
-                'message' => "Avatar not set !!!"
-            ], 400);
+            return $this->failure("Avatar not set");
         }
 
         $this->authorize('delete', $image);
@@ -179,8 +172,6 @@ class ImageController extends Controller
         $user -> avatar_id = null;
         $user -> save();
 
-        return response()->json([
-            'message' => 'Delete avatar success'
-        ], 200);
+        return $this->success('Delete avatar success');
     }
 }

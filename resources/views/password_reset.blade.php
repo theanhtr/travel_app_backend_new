@@ -25,7 +25,7 @@
                 <h2 class="mb-1 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                     Change Password 
                 </h2>
-                <form method="POST" class="mt-4 space-y-4 lg:mt-5 md:space-y-5" action="{{ route('resetPassword') }}">
+                <form method="POST" class="mt-4 space-y-4 lg:mt-5 md:space-y-5" action="{{ route('auth.resetPassword') }}">
                     @csrf
                     <div>
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>

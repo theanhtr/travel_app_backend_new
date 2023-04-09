@@ -15,7 +15,9 @@ class Image extends Model
     protected $fillable = [
         'path',
         'role_image_id',
-        'hotel_id'
+        'hotel_id',
+        'type_room_id', 
+        'user_id'
     ];
 
     public function user(): Relations\BelongsTo
@@ -33,7 +35,7 @@ class Image extends Model
         return $this->belongsTo(Hotel::class);
     }
 
-    public function typeRooms(): Relations\BelongsTo
+    public function typeRoom(): Relations\BelongsTo
     {
         return $this->belongsTo(TypeRoom::class);
     }

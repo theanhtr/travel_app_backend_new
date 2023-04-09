@@ -34,19 +34,8 @@ class ResetPasswordRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
-            'message'   => 'Validation errors',
+            'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
-        ], 400));
-    }
-
-    public function messages()
-    {
-        return [
-            'email.required' => 'Email is required',
-            'email.email' => 'Email is wrong',
-            'password.required' => 'Password is required',
-            'password.confirmed' => 'Password need confirm',
-            'token.required' => 'Token is required',
-        ];
+        ], 500));
     }   
 }

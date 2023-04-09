@@ -37,25 +37,8 @@ class StoreUserInformationRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
-            'message'   => 'Validation errors',
+            'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
-        ], 400));
-    }
-
-    public function messages()
-    {
-        return [
-            'first_name.string' => 'First name is wrong type',
-            'last_name.string' => 'Last name is wrong type',
-            'last_name.required' => 'Last name is required',
-            'first_name.required' => 'First name is required',
-            'email.required' => 'Email user is required',
-            'email.email' => 'Email user is wrong type',
-            'phone_number.numeric' => 'Phone number is wrong type',
-            'date_of_birth.date' => 'Date of birth is wrong type',
-            'email_contact.email' => 'Email contact is wrong type',
-            'email_contact.unique' => 'Email contact is exists',
-            'phone_number.unique' => 'Phone number is exists',
-        ];
+        ], 500));
     }
 }

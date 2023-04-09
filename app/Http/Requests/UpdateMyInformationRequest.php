@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class RegisterNewCustomerRequest extends FormRequest
+class UpdateMyInformationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,11 +21,14 @@ class RegisterNewCustomerRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed',
+                'first_name' => 'string',
+                'last_name' => 'string',
+                'phone_number' => 'numeric|unique:user_information',
+                'date_of_birth' => 'date',
+                'email_contact' => 'email|unique:user_information'
         ];
     }
 

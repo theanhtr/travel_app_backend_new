@@ -7,19 +7,22 @@ use App\Models\Authentication;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\LoginAuthenticationRequest;
 use App\Http\Requests\LogoutAuthenticationRequest;
+use App\Models\Role;
 use App\Models\User;
+use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthenticationController extends Controller
 {
+    use HttpResponse;
     public function login(LoginAuthenticationRequest $request)
     {
-        $login = $request->only('email', 'password');
+        $login = $request->only("email", "password");
         
         if(!Auth::attempt($login)) {
-            return response()->json(['message' => 'Invalid login credential !!!'], 404);
+            return $this->failure("Invalid login credential", "", 400);
         }
 
         /**
@@ -28,13 +31,16 @@ class AuthenticationController extends Controller
 
         $user = Auth::user();
         $token = $user -> createToken($user->email);
+        $role_name = Role::find($user -> role_id)->name;
 
-        return response()->json([
-            'id' => $user->id,
-            'email' => $user->email,
-            'token' => $token -> accessToken,
-            'token_expires_at' => $token -> token -> expires_at
-        ], 200);
+        return $this->success("Login success", 
+            [
+                "email" => $user->email,
+                "token" => $token -> accessToken,
+                "token_expires_at" => $token -> token -> expires_at, 
+                "role_name" => $role_name
+            ]
+        , 200);
     }
     public function logout(LogoutAuthenticationRequest $request)
     {
@@ -48,18 +54,12 @@ class AuthenticationController extends Controller
             $user -> tokens -> each(function($token) {
                 $token -> delete();
             });
-
-            return response()->json([
-                'message' => 'logged out from all device'
-            ], 200);
         }
 
         $userToken = $user->token();
         $userToken -> delete();
 
-        return response()->json([
-            'message' => 'loggout success'
-        ], 200);
+        return $this->success("logged out success", "", 200);
     }
 
     public function updatePassword(UpdatePasswordRequest $request) {
@@ -73,16 +73,12 @@ class AuthenticationController extends Controller
         $user = Auth::user();
 
         if (!Hash::check($password, $user->password)) {
-            return response()->json([
-                'message' => 'Password not true!!!'
-            ], 400);
+            return $this->failure("Password not true", "", 400);
         }
 
         $user->password = Hash::make($newPassword);
         $user->save();
 
-        return response()->json([
-            'message' => 'Password updated'
-        ], 200);
+        return $this->success("Password updated", "", 200);
     }
 }

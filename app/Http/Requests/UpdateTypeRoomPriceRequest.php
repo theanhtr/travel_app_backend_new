@@ -27,4 +27,13 @@ class UpdateTypeRoomPriceRequest extends FormRequest
             'price' => 'required|numeric',
         ];
     }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'message'   => 'Invalid input parameter structure',
+            'data'      => $validator->errors()
+        ], 500));
+    }
 }
