@@ -38,8 +38,8 @@ class UpdateHotelRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
-            'message'   => 'Validation errors',
+            'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
-        ], 400));
+        ], 500));
     }
 }

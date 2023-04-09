@@ -8,6 +8,7 @@ use App\Models\Authentication;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
+use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,14 +18,13 @@ use Illuminate\Support\Str;
 
 class ForgotPasswordController extends Controller
 {
+    use HttpResponse;
     public function forgotPassword(ForgotPasswordRequest $request)
     {
         $email = $request -> email;
 
         if(User::where('email', $email)->doesntExist()) {
-            return response()->json([
-                'message' => 'User email does not exist',
-            ], 400);
+            return $this->failure('No user found with this email', '', 400);
         }
 
         $dataExists = DB::table('password_reset_tokens')->where('email', $email)->first();
@@ -32,9 +32,7 @@ class ForgotPasswordController extends Controller
         if($dataExists) {
             //van con thoi gian
             if ($dataExists -> created_at >= now()) {
-                return response()->json([
-                    'message' => 'Please use the previous email',
-                ], 400);
+                return $this->failure('Please use the previous email', '', 400);
             } else {
                 DB::table('password_reset_tokens')->where('email', $email)->delete();
             }
@@ -45,14 +43,12 @@ class ForgotPasswordController extends Controller
         DB::table('password_reset_tokens')->insert([
             'email' => $email,
             'token' => $token,
-            'created_at' => now()->addminutes(15) 
+            'created_at' => now()->addminutes(5) 
         ]);
 
        MailController::sendEmail('mail.password_reset', ['token' => $token], $email, 'Forgot password');
 
-        return response()->json([
-            'message' => 'Check your mail',
-        ], 200);
+       return $this->success('Send email reset password reset. Check your mail', '', 200);
     }
 
     public function viewResetPassword($token) {

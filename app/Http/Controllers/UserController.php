@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Helper\CheckRoleAdmin;
+use App\Models\Role;
 use App\Models\User;
+use App\Http\Requests\GetUserByEmailRequest;
 // use App\Http\Requests\StoreUserRequest;
 // use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\AdminRegisterNewUserRequest;
+use App\Http\Requests\ChangeRoleByEmailRequest;
+use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -14,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    use HttpResponse;
     /**
      * Display a listing of the resource.
      */
@@ -21,7 +26,20 @@ class UserController extends Controller
     {
         $this->authorize('checkAdmin', User::class);
 
-        return response()->json(User::all(), 200);
+        return $this->success('Get all user completed', User::all());
+    }
+    
+    public function showOneUser(GetUserByEmailRequest $request)
+    {
+        $this->authorize('checkAdmin', User::class);
+
+        $user = User::where('email', $request->email)->first();
+
+        if(!$user) {
+            return $this->failure('User of this email not found');
+        }
+
+        return $this->success('Get user of this email completed', $user);
     }
 
     /**
@@ -43,68 +61,23 @@ class UserController extends Controller
             ['user_id' => $user->id, 'email' => $user->email, 'password' => $password], 
             $user->email, 'Email Confirm');
 
-        return response()->json([
-            'message' => 'Create done, need confirm email'
-        ], 200);
+        return $this->success('Created user done, need confirm email', $user, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function showOneUser(Request $request)
-    {
+    public function deleteUser(GetUserByEmailRequest $request) {
         $this->authorize('checkAdmin', User::class);
-
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-        ]);
-    
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-
-            return response()->json([
-                'error' => $errors->first()
-            ], 400);
-        }
 
         $user = User::where('email', $request->email)->first();
 
         if(!$user) {
-            return response()->json([
-                'error' => "User not found"
-            ], 400);
-        }
-
-        return response()->json($user, 200);
-    }
-
-    public function deleteUser(Request $request) {
-        $this->authorize('checkAdmin', User::class);
-
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-        ]);
-    
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-
-            return response()->json([
-                'error' => $errors->first()
-            ], 400);
-        }
-
-        $user = User::where('email', $request->email)->first();
-
-        if(!$user) {
-            return response()->json([
-                'error' => "User not found"
-            ], 400);
+            return $this->failure('User of this email not found');
         }
 
         if(CheckRoleAdmin::checkRoleAdmin($user)) {
-            return response()->json([
-                'error' => "User is admin, can't delete"
-            ], 400);
+            return $this->failure("User is admin, can't delete");
         }
 
         MailController::sendEmail('mail.delete_account', 
@@ -113,40 +86,33 @@ class UserController extends Controller
 
         User::destroy($user->id);
 
-        return response()->json([
-            'message' => "Delete complete"
-        ], 200);
+        return $this->success("Delete complete");
     }
 
-    public function changeRole(Request $request) {
+    public function getRole() {
         $this->authorize('checkAdmin', User::class);
 
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'role_id' => 'required|numeric'
-        ]);
-    
-        if ($validator->fails()) {
-            $errors = $validator->errors();
+        $roles = Role::all();
 
-            return response()->json([
-                'error' => $errors->first()
-            ], 400);
-        }
+        return $this->success("Get role completed", $roles);
+    }
+
+    public function changeRole(ChangeRoleByEmailRequest $request) {
+        $this->authorize('checkAdmin', User::class);
 
         $user = User::where('email', $request->email)->first();
 
         if(!$user) {
-            return response()->json([
-                'error' => "User not found"
-            ], 400);
+            return $this->failure('User of this email not found');
+        }
+
+        if(CheckRoleAdmin::checkRoleAdmin($user)) {
+            return $this->failure("User is admin, can't change role");
         }
 
         $user->role_id = $request -> role_id;
         $user->save();
 
-        return response()->json([
-            'message' => "Change role completed"
-        ], 200);
+        return $this->success("Change role completed");
     }
 }

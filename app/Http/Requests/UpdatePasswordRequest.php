@@ -34,17 +34,8 @@ class UpdatePasswordRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
-            'message'   => 'Validation errors',
+            'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
-        ], 400));
-    }
-
-    public function messages()
-    {
-        return [
-            'password.required' => 'Password is required',
-            'new_password.required' => 'New password is required',
-            'new_password.confirmed' => 'New password need confirm',
-        ];
-    }   
+        ], 500));
+    }  
 }

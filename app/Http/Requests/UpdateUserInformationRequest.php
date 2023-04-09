@@ -24,11 +24,12 @@ class UpdateUserInformationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'string',
-            'last_name' => 'string',
-            'phone_number' => 'numeric|unique:user_information',
-            'date_of_birth' => 'date',
-            'email_contact' => 'email|unique:user_information'
+                'email' => 'required|email',
+                'first_name' => 'string',
+                'last_name' => 'string',
+                'phone_number' => 'numeric|unique:user_information',
+                'date_of_birth' => 'date',
+                'email_contact' => 'email|unique:user_information'
         ];
     }
 
@@ -36,21 +37,8 @@ class UpdateUserInformationRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
-            'message'   => 'Validation errors',
+            'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
-        ], 400));
-    }
-
-    public function messages()
-    {
-        return [
-            'first_name.string' => 'First name is wrong type',
-            'last_name.string' => 'Last name is wrong type',
-            'phone_number.numeric' => 'Phone number is wrong type',
-            'date_of_birth.date' => 'Date of birth is wrong type',
-            'email_contact.email' => 'Email contact is wrong type',
-            'email_contact.unique' => 'Email contact is exists',
-            'phone_number.unique' => 'Phone number is exists',
-        ];
+        ], 500));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\User;
+use App\Traits\HttpResponse;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\URL;
 
 class EnsureEmailVerifiedCustom
 {
+    use HttpResponse;
     /**
      * Handle an incoming request.
      *
@@ -28,9 +30,9 @@ class EnsureEmailVerifiedCustom
 
         if (($request->user() instanceof MustVerifyEmail &&
             ! $request->user()->hasVerifiedEmail())
-            && $request->getRequestUri() != "/api/logout"   
+            && $request->getRequestUri() != "/api/auth/logout"   
             ) {
-            return abort(403, 'Your email address is not verified.');
+            return $this->failure('Your email address is not verified.', '', 403);
         }
 
         return $next($request);

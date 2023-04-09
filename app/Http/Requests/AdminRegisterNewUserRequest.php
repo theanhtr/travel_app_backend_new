@@ -25,7 +25,7 @@ class AdminRegisterNewUserRequest extends FormRequest
     {
         return [
             'email' => 'required|email|unique:users',
-            'role_id' => 'required|numeric'
+            'role_id' => 'required|numeric|exists:roles,id'
         ];
     }
 
@@ -33,19 +33,8 @@ class AdminRegisterNewUserRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
-            'message'   => 'Validation errors',
+            'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
-        ], 400));
-    }
-
-    public function messages()
-    {
-        return [
-            'email.required' => 'Email is required',
-            'email.email' => 'Email is wrong',
-            'email.unique' => 'Email is exists',
-            'role_id.required' => 'Role is required',
-            'role_id.numeric' => 'Role is wrong',
-        ];
+        ], 500));
     }
 }

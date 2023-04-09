@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\HttpResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
@@ -33,17 +34,8 @@ class LoginAuthenticationRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
-            'message'   => 'Validation errors',
+            'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
-        ], 400));
-    }
-
-    public function messages()
-    {
-        return [
-            'email.required' => 'Email is required',
-            'email.email' => 'Email is wrong',
-            'password.required' => 'Password is required',
-        ];
-    }    
+        ], 500));
+    }  
 }

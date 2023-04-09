@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class StoreRoomRequest extends FormRequest
 {
@@ -25,5 +27,14 @@ class StoreRoomRequest extends FormRequest
             'type_room_id' => 'required|numeric',
             'quantity' => 'required|numeric',
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'message'   => 'Invalid input parameter structure',
+            'data'      => $validator->errors()
+        ], 500));
     }
 }

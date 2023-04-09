@@ -32,4 +32,13 @@ class UpdateTypeRoomRequest extends FormRequest
             'amenities' => 'required|string',
         ];
     }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'message'   => 'Invalid input parameter structure',
+            'data'      => $validator->errors()
+        ], 500));
+    }
 }
