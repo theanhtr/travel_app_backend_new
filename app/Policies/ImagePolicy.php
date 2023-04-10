@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helper\CheckRoleAdmin;
+use App\Models\Hotel;
 use App\Models\User;
 use App\Models\Image;
 use Illuminate\Auth\Access\Response;
@@ -46,6 +47,11 @@ class ImagePolicy
     public function delete(User $user, Image $image): bool
     {
         return $user->id === $image->user_id;
+    }
+
+    public function deleteImages(User $user, Image $image): bool
+    {
+        return $user->id === $image->user_id && $image->hotel_id != null;
     }
 
     /**

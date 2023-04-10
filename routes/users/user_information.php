@@ -17,4 +17,17 @@ Route::group(['prefix' => 'my-information', 'as' => 'my-information.'], function
     Route::put('/', [App\Http\Controllers\UserInformationController::class, 'updateMe']) -> name('update');
     Route::patch('/', [App\Http\Controllers\UserInformationController::class, 'updateMe']) -> name('update');
     Route::delete('/', [App\Http\Controllers\UserInformationController::class, 'destroyMe']) -> name('delete');
+
+    
+    //my-avatar
+    Route::group(['prefix' => 'avatar', 'as' => 'avatar.'], function() {
+        Route::get('/', [App\Http\Controllers\ImageController::class, 'showMyAvatar']) 
+                ->name('show');
+
+        Route::post('/', [App\Http\Controllers\ImageController::class, 'uploadMyAvatar']) 
+                ->name('upload');
+        
+        Route::delete('/', [App\Http\Controllers\ImageController::class, 'deleteMyAvatar']) 
+                ->name('delete');
+    });
 });

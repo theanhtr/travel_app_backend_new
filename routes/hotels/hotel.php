@@ -40,6 +40,17 @@ Route::group(['prefix' => 'my-hotel', 'as' => 'my-hotel.'], function() {
         Route::delete('/', [App\Http\Controllers\HotelController::class, 'deleteAmenities'])
             -> name('delete');
     });
+
+    Route::group(['prefix' => 'images', 'as' => 'images.'], function() {
+        Route::get('/', [App\Http\Controllers\ImageController::class, 'showHotelImages']) 
+                ->name('show');
+
+        Route::post('/', [App\Http\Controllers\ImageController::class, 'uploadHotelImages']) 
+                ->name('upload');
+        
+        Route::delete('/', [App\Http\Controllers\ImageController::class, 'deleteHotelImages']) 
+                ->name('delete');
+    });
 });
 
 

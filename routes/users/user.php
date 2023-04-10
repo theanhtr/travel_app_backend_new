@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-//user account
+//user account only admin
 Route::group(['prefix' => 'users', 'as' => 'users.'], function() {
         Route::get('/', [App\Http\Controllers\UserController::class, 'index']) 
                 ->name('viewAllUser');
