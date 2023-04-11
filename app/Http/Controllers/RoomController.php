@@ -8,27 +8,25 @@ use App\Http\Requests\StoreRoomRequest;
 use App\Http\Requests\DeleteRoomRequest;
 use App\Models\TypeRoom;
 use App\Models\User;
+use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
 
 class RoomController extends Controller
 {
+    use HttpResponse;
     public function addRooms(StoreRoomRequest $request) {
         $user = Auth::user();
 
         $myHotel = Hotel::where('user_id', $user->id)->first();
 
         if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
+            return $this->failure('Hotel of manager isnt exist');
         }
 
         $typeRoom = TypeRoom::find($request->type_room_id);
 
         if(!$typeRoom) {
-            return response()->json([
-                'error' => 'Type room isnt exist'
-            ], 400);
+            return $this->failure('Type room isnt exist');
         }
 
         $this->authorize('typeRoom', [$myHotel, $typeRoom]);
@@ -38,18 +36,10 @@ class RoomController extends Controller
                 "availablity" => true
             ]);
         }
-
-        if ($typeRoom->quantity_available == null) {
-            $typeRoom -> quantity_available = $request -> quantity;
-        } else {
-            $typeRoom -> quantity_available += $request -> quantity;
-        }
-
+        
         $typeRoom -> save();
 
-        return response()->json([
-            'message' => 'Room is stored'
-        ], 200);
+        return $this->success('Room is stored');
     }
 
     // public function deleteRooms(DeleteRoomRequest $request) {
@@ -79,12 +69,6 @@ class RoomController extends Controller
     //         ]);
     //     }
 
-    //     if ($typeRoom->quantity_available == null) {
-    //         $typeRoom -> quantity_available = $request -> quantity;
-    //     } else {
-    //         $typeRoom -> quantity_available += $request -> quantity;
-    //     }
-
     //     $typeRoom -> save();
 
     //     return response()->json([
@@ -98,25 +82,19 @@ class RoomController extends Controller
         $myHotel = Hotel::where('user_id', $user->id)->first();
 
         if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
+            return $this->failure('Hotel of manager isnt exist');
         }
 
         $room = Room::find($room_id);
 
         if(!$room) {
-            return response()->json([
-                'error' => 'Type room isnt exist'
-            ], 400);
+            return $this->failure('Room isnt exist');
         }
 
         $typeRoom = TypeRoom::find($room->type_room_id);
 
         if(!$typeRoom) {
-            return response()->json([
-                'error' => 'Type room isnt exist'
-            ], 400);
+            return $this->failure('Type room isnt exist');
         }
 
         $this->authorize('typeRoom', [$myHotel, $typeRoom]);
@@ -124,8 +102,6 @@ class RoomController extends Controller
         $room -> availablity = !$room -> availablity;
         $room -> save();
 
-        return response()->json([
-            'message' => 'Room is updated'
-        ], 200);
+        return $this->success('Room is updated');
     }
 }

@@ -13,6 +13,8 @@ class SplitIdInString {
             if ($idString[$i] == ",") {
                 $idNumber = (int)$idTemp;
                 $idTemp = "";
+
+                if($idNumber != 0) 
                 array_push($array_temp, $idNumber);
             } else {
                 $idTemp .= $idString[$i];
@@ -20,7 +22,8 @@ class SplitIdInString {
         }
 
         $idNumber = (int)$idTemp;
-        $idTemp = "";
+
+        if($idNumber != 0) 
         array_push($array_temp, $idNumber);
 
         $array_result = array_unique($array_temp);

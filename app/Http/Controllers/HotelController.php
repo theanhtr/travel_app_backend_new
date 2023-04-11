@@ -10,74 +10,71 @@ use App\Models\Hotel;
 use App\Http\Requests\StoreHotelRequest;
 use App\Http\Requests\UpdateHotelRequest;
 use App\Models\User;
+use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
 
 class HotelController extends Controller
 {
+    use HttpResponse;
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
+    public function index() {
         $this->authorize('viewAny', Hotel::class);
 
-        return response()->json(Hotel::all(), 200);
+        return $this->success('Get success', Hotel::all());
     }
 
-    public function showOneHotel($hotel_id)
-    {
+    public function showOneHotel($hotel_id) {
         $hotel = Hotel::find($hotel_id);
 
         if(!$hotel) {
-            return response()->json(["message" => "Hotel not found"], 400);
+            return $this->failure("Hotel not found");
         }
 
         $this->authorize('view', $hotel);
 
-        return response()->json($hotel, 200);
+        $amenities = $hotel -> amenities() -> get();
+        
+        return $this->success("Get hotel completed", 
+        ['hotel' => $hotel,
+        'amenities' => $amenities]);
     }
 
-    public function deleteHotel($hotel_id)
-    {
+    public function deleteHotel($hotel_id) {
         $hotel = Hotel::find($hotel_id);
 
         if(!$hotel) {
-            return response()->json(["message" => "Hotel not found"], 400);
+            return $this->failure("Hotel not found");
         }
 
         $this->authorize('delete', $hotel);
 
-        Hotel::destroy($hotel->id);
+        $hotel->delete();
 
-        return response()->json([
-            'message' => "Delete complete"
-        ], 200);
+        return $this->success("Delete hotel completed");
     }
 
-    public function showMe()
-    {
+    public function showMe() {
         $user = Auth::user();
         
         $myHotel = Hotel::where('user_id', $user->id)->first();
 
         if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
+            return $this->failure("Hotel of manager isn't exist");
         }
 
         $this->authorize('view', $myHotel);
+
         $amenities = $myHotel -> amenities() -> get();
-        return response()->json([
-            'data' => [
-                'hotel' => $myHotel,
-                'amenities' => $amenities
-            ]
-        ], 200);
+
+        
+        return $this->success("Get hotel completed", 
+        ['hotel' => $myHotel,
+        'amenities' => $amenities]);
     }
 
-    public function createMe(StoreHotelRequest $request) 
-    {
+    public function createMe(StoreHotelRequest $request) {
         $this->authorize('create', Hotel::class);
         
         $user = Auth::user();
@@ -86,9 +83,7 @@ class HotelController extends Controller
          */
 
         if(Hotel::where('user_id', $user->id)->first()) {
-            return response()->json([
-                'error' => 'Hotel of manager is exist'
-            ], 400);
+            return $this->failure('Hotel of manager is exist');
         }
 
         $address = Address::create([
@@ -104,23 +99,18 @@ class HotelController extends Controller
             'address_id' => $address->id,
         ]);
 
-        return response()->json([
-            'message' => 'Hotel is stored'
-        ], 200);
+        return $this->success('Hotel is stored');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function updateMe(UpdateHotelRequest $request)
-    {
+    public function updateMe(UpdateHotelRequest $request) {
         $user = Auth::user();
         $myHotel = Hotel::where('user_id', $user->id)->first();
 
         if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
+            return $this-> failure("Hotel of manager isn't exist");
         }
 
         $this->authorize('update', $myHotel);
@@ -148,32 +138,25 @@ class HotelController extends Controller
 
         $myHotel->save();
 
-        return response()->json([
-            'message' => 'Hotel is updated'
-        ], 200);
+        return $this->success('Hotel is updated');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroyMe()
-    {
+    public function destroyMe() {
         $user = Auth::user();
         $myHotel = Hotel::where('user_id', $user->id)->first();
 
         if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
+            return $this->failure("Hotel of manager isn't exist");
         }
         
         $this->authorize('delete', $myHotel);
 
         $myHotel -> delete();
 
-        return response()->json([
-            'message' => "Delete complete"
-        ], 200);
+        return $this->success("Delete complete");
     }
 
     public function showAmenities() {
@@ -182,18 +165,14 @@ class HotelController extends Controller
         $myHotel = Hotel::where('user_id', $user->id)->first();
 
         if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
+            return $this->failure('Hotel of manager isnt exist');
         }
 
         $this->authorize('view', $myHotel);
 
         $amnities = $myHotel->amenities()->get();
 
-        return response()->json([
-            $amnities
-        ], 200);
+        return $this->success('Get success', $amnities);
     }
 
     public function addAmenities(StoreUserAmenitiesRequest $request) {
@@ -202,9 +181,7 @@ class HotelController extends Controller
         $myHotel = Hotel::where('user_id', $user->id)->first();
 
         if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
+            return $this->failure('Hotel of manager isnt exist');
         }
 
         $this->authorize('createAmenities', $myHotel);
@@ -213,9 +190,7 @@ class HotelController extends Controller
 
         $myHotel -> amenities() -> syncWithoutDetaching($id_amenities);
 
-        return response()->json([
-            "success"
-        ], 200);
+        return $this->success("Add amenities success");
     }
 
     public function deleteAmenities(StoreUserAmenitiesRequest $request) {
@@ -224,9 +199,7 @@ class HotelController extends Controller
         $myHotel = Hotel::where('user_id', $user->id)->first();
 
         if(!$myHotel) {
-            return response()->json([
-                'error' => 'Hotel of manager isnt exist'
-            ], 400);
+            return $this->failure('Hotel of manager isnt exist');
         }
 
         $this->authorize('createAmenities', $myHotel);
@@ -235,8 +208,6 @@ class HotelController extends Controller
         
         $myHotel -> amenities() -> detach($id_amenities);
 
-        return response()->json([
-            "delete success"
-        ], 200);
+        return $this->failure("Delete success");
     }
 }

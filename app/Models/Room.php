@@ -21,4 +21,9 @@ class Room extends Model
     {
         return $this->belongsTo(TypeRoom::class);
     }
+
+    public function roomReservationTimes():HasMany
+    {
+        return $this->hasMany(RoomReservationTime::class);
+    }
 }

@@ -17,8 +17,7 @@ class TypeRoom extends Model
         'name', 
         'description', 
         'price',
-        'occupancy',
-        'quantity_available'
+        'occupancy'
     ];
 
     public function hotel():BelongsTo
@@ -48,6 +47,10 @@ class TypeRoom extends Model
             $typeRoom->amenities()->detach();
             $typeRoom->rooms->each(function($room){
                 $room->delete();
+             });
+
+            $typeRoom->images->each(function($image){
+                $image->delete();
              });
         });
     }

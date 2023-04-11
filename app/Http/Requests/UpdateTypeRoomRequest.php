@@ -30,6 +30,7 @@ class UpdateTypeRoomRequest extends FormRequest
             'occupancy' => 'numeric',
             //"1,2,3": id amenities
             'amenities' => 'required|string',
+            'number_of_beds' => 'numeric'
         ];
     }
 

@@ -1,0 +1,93 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Helper\GetHotelsByAddress;
+use App\Http\Requests\SearchHotelsRequest;
+use App\Http\Requests\SearchTypeRoomsRequest;
+use App\Models\Address;
+use App\Models\Hotel;
+use App\Models\Room;
+use App\Traits\HttpResponse;
+use DateTime;
+use Illuminate\Http\Request;
+
+class SearchController extends Controller
+{
+    use HttpResponse;
+    public function searchHotels(SearchHotelsRequest $request) {
+        $hotels = Hotel::all();
+        
+        $hotelsFilter = GetHotelsByAddress::getHotelsByAddress($hotels, $request -> province_id, $request -> district_id, $request -> sub_district_id);
+
+        return $this->success("Search hotels complete", $hotelsFilter);
+    }
+
+    public function searchTypeRooms(SearchTypeRoomsRequest $request) {
+        $hotel = Hotel::find($request->hotel_id);
+        
+        if(!$hotel) {
+            return $this->failure("Hotel isn't exist");
+        }
+
+        $check_in_date = new DateTime($request -> check_in_date);
+        $check_out_date = new DateTime($request -> check_out_date);
+        $guest_quantity = $request -> guest_quantity;
+        $room_quantity = $request -> room_quantity;
+
+        if ($guest_quantity < $room_quantity) {
+            return $this->failure("Room quantity can not greater than guest quantity");
+        }
+
+        $quantity_people_per_room = ceil($guest_quantity / $room_quantity);
+
+        $typeRooms = $hotel -> typeRooms() -> get();
+        $typeRoomResponse = array();
+
+        foreach($typeRooms as $typeRoom) {
+            if ($typeRoom -> occupancy < $quantity_people_per_room) {
+                continue;
+            }
+
+            $rooms = $typeRoom -> rooms() -> get();
+            $count_availablity_room = 0;
+
+            foreach($rooms as $room) {
+                /**
+                 * @var Room $room
+                 */
+                $room_reservation_times = $room -> roomReservationTimes() -> get();
+
+                if(!$room_reservation_times) {
+                    $count_availablity_room ++; 
+                } else {
+                    $availablity = true;
+                    foreach($room_reservation_times as $room_reservation_time) {
+                        $room_check_in_date = new DateTime($room_reservation_time -> check_in_date);
+                        $room_check_out_date = new DateTime($room_reservation_time -> check_out_date);
+
+                        if($room_check_in_date -> getTimestamp() < $check_in_date -> getTimestamp() && $room_check_out_date -> getTimestamp() > $check_in_date -> getTimestamp()
+                        || $room_check_in_date -> getTimestamp() < $check_out_date -> getTimestamp() && $room_check_out_date -> getTimestamp() > $check_out_date -> getTimestamp()) {
+                            $availablity = false;
+                            break;
+                        }
+                    }
+                    
+                    if($availablity) {
+                        $count_availablity_room ++;
+                    }
+                }   
+            }
+
+            if($count_availablity_room < $room_quantity) {
+                continue;
+            }
+
+            $typeRoom["count_availablity_room"] = $count_availablity_room;
+            $typeRoom["amenities"] = $typeRoom -> amenities() -> get();
+            array_push($typeRoomResponse, $typeRoom);
+        }
+        
+        return $this->success("Search type rooms complete", $typeRoomResponse);
+    }
+}

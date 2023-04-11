@@ -49,10 +49,16 @@ class ImagePolicy
         return $user->id === $image->user_id;
     }
 
-    public function deleteImages(User $user, Image $image): bool
+    public function deleteHotelImages(User $user, Image $image): bool
     {
         return $user->id === $image->user_id && $image->hotel_id != null;
     }
+
+    public function deleteTypeRoomImages(User $user, Image $image, $type_room_id): bool
+    {
+        return $user->id === $image->user_id && $image->type_room_id === $type_room_id;
+    }
+
 
     /**
      * Determine whether the user can restore the model.

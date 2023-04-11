@@ -5,27 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use App\Http\Requests\StoreAddressRequest;
 use App\Http\Requests\UpdateAddressRequest;
+use App\Models\District;
 use App\Models\Hotel;
+use App\Models\Province;
+use App\Models\SubDistrict;
 use App\Models\User;
+use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
 
 class AddressController extends Controller
 {
-
-    public function showMyHotelAddress()
-    {
+    use HttpResponse;
+    public function showMyHotelAddress() {
         $user = Auth::user();
 
         /**
          * @var User $user
          */
 
-        if(!$user) {
-            return response()->json("Need authorization", 400);
-        }
-
         if(!$user->hotel()->exists()) {
-            return response()->json("Hotel not found", 400);
+            return $this->failure("Hotel of manager isnt exist");
         }
         
         $hotel = $user->hotel()->first();
@@ -36,25 +35,32 @@ class AddressController extends Controller
         $address = Address::find($hotel -> address_id);
 
         if(!$address) {
-            return response()->json("Address not register", 400);
+            return $this->failure("Address not register");
         }
 
-        return response()->json($address, 200);
+        $addressResponse = array();
+        $addressResponse['specific_address'] = $address -> specific_address;
+        $addressResponse['province'] = Province::find($address->province_id)->name;
+        $addressResponse['district'] = District::find($address->district_id)->name;
+        $addressResponse['sub_district'] = SubDistrict::find($address->sub_district_id)->name;
+
+        return $this->success("Get success", $addressResponse);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateAddressRequest $request, Address $address)
-    {
-        // 
+    public function showProvinces() {
+        $provinces = Province::all();
+        return $this->success("Get all province success", $provinces);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Address $address)
-    {
-        //
+    public function showDistricts($province_id) {
+        $province = Province::find($province_id);
+        $districts = $province -> districts() -> get();
+        return $this->success("Get all districts of " . $province -> name . " success", $districts);
+    }
+
+    public function showSubDistricts($district_id) {
+        $district = District::find($district_id);
+        $sub_districts = $district->subDistricts()->get();
+        return $this->success("Get all sub districts of " . $district -> name . " success", $sub_districts);
     }
 }

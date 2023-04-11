@@ -8,6 +8,7 @@ use App\Http\Requests\StoreMutipleImageRequest;
 use App\Http\Requests\StoreImageRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateImageRequest;
+use App\Models\TypeRoom;
 use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
@@ -229,9 +230,9 @@ class ImageController extends Controller
             return $this->failure('Hotel of manager isnt exist');
         }
         
-        $images = $this->uploadMutipleImage($request, GetRoleImageIdHelper::getHotelRoleImageId(), $myHotel -> id);
+        $this->uploadMutipleImage($request, GetRoleImageIdHelper::getHotelRoleImageId(), $myHotel -> id);
 
-        return $this->success('Upload images completed', $images);
+        return $this->success('Upload images completed');
     }
 
     public function deleteHotelImages(DeleteImagesRequest $request) {
@@ -255,7 +256,123 @@ class ImageController extends Controller
 
         foreach($images_id as $image_id) {
             $image = Image::find($image_id);
-            $this->authorize('deleteImages', $image);
+            $this->authorize('deleteHotelImages', $image);
+        }
+
+        foreach($images_id as $image_id) {
+            $image = Image::find($image_id);
+            $image->delete();
+        }
+
+        return $this->success('Delete images success');
+    }
+
+    //type room images
+    public function showTypeRoomImages($type_room_id) {
+        $user = Auth::user();
+        
+        /**
+         * @var User $user
+         */
+
+        $myHotel = $user->hotel()->first();
+        
+        if(!$myHotel) {
+            return $this->failure('Hotel of manager isnt exist');
+        }
+
+        /**
+         * @var Hotel $myHotel
+         */
+
+        $typeRoom = $myHotel -> typeRooms()->find($type_room_id);
+
+        /**
+         * @var TypeRoom $typeRoom
+         */
+
+         if(!$typeRoom) {
+            return $this->failure('Type room isnt exist');
+        }
+
+        $images = $typeRoom -> images()->get();
+
+        $imagesResponse = array();
+
+        foreach($images as $image) {
+            $image_temp = array();
+            $image_temp["id"] = $image->id;
+            $image_temp["path"] = asset('uploads/' . $image->path);
+            array_push($imagesResponse, $image_temp);
+        }
+
+        return $this->success("Get image complete", $imagesResponse);
+    }
+
+    public function uploadTypeRoomImages($type_room_id, StoreMutipleImageRequest $request) {
+        $user = Auth::user();
+
+        /**
+         * @var User $user
+         */
+
+        $myHotel = $user->hotel()->first();
+
+        /**
+         * @var Hotel $myHotel
+         */
+
+        if(!$myHotel) {
+            return $this->failure('Hotel of manager isnt exist');
+        }
+
+        $typeRoom = $myHotel -> typeRooms()->find($type_room_id);
+
+        /**
+         * @var TypeRoom $typeRoom
+         */
+
+        if(!$typeRoom) {
+            return $this->failure('Type room isnt exist');
+        }
+        
+        $this->uploadMutipleImage($request, GetRoleImageIdHelper::getHotelRoomRoleImageId(), null, $typeRoom -> id);
+
+        return $this->success('Upload images completed');
+    }
+
+    public function deleteTypeRoomImages($type_room_id, DeleteImagesRequest $request) {
+        $user = Auth::user();
+
+        /**
+         * @var User $user
+         */
+
+        $myHotel = $user->hotel();
+
+        /**
+         * @var Hotel $myHotel
+        */
+
+        if(!$myHotel) {
+            return $this->failure("Hotel of manager isn't exist");
+        }
+
+        $images_id = SplitIdInString::splitIdInString($request->images_id);
+
+        $typeRoom = $myHotel -> typeRooms()->find($type_room_id);
+
+        /**
+         * @var TypeRoom $typeRoom
+         */
+
+        if(!$typeRoom) {
+            return $this->failure('Type room isnt exist');
+        }
+
+        foreach($images_id as $image_id) {
+            $image = Image::find($image_id);
+            $this->authorize('deleteTypeRoomImages', [$image, $typeRoom->id]);
         }
 
         foreach($images_id as $image_id) {

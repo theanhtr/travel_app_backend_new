@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('images', function (Blueprint $table) {
-            $table->foreignId('hotel_id')->nullable()->constrained('hotels');
+        Schema::create('sort_by', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->integer('type')->default(1); //1 -hotel, 2-flight
         });
     }
 
     /**
      * Reverse the migrations.
-    */
+     */
     public function down(): void
     {
-        Schema::table('images', function (Blueprint $table) {
-            $table->dropForeign(['hotel_id']);
-            $table->dropColumn('hotel_id');
-        });
+        Schema::dropIfExists('sort_by');
     }
 };
