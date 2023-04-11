@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class StoreTypeRoomRequest extends FormRequest
+class FilterHotelsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,14 @@ class StoreTypeRoomRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'description' => 'string',
-            'price' => 'required|numeric',
-            'occupancy' => 'required|numeric',
-            //"1,2,3": id amenities
-            'amenities' => 'required|string',
-            'number_of_beds' => 'required|numeric'
+            'province_id' => 'numeric',
+            'district_id' => 'numeric',
+            'sub_district_id' => 'numeric',
+            'budget_from' => 'required|numeric',
+            'budget_to' => 'required|numeric|gte:budget_from',
+            'hotel_class' => 'required|numeric',
+            'amenities' => 'string|nullable',
+            'sort_by_id' => 'numeric'
         ];
     }
     
@@ -41,5 +42,5 @@ class StoreTypeRoomRequest extends FormRequest
             'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
         ], 500));
-    }
+    }   
 }

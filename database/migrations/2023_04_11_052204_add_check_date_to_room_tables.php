@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('amenities', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('rooms', function (Blueprint $table) {
+            $table->timestamp('check_in_date')->nullable();
+            $table->timestamp('check_out_date')->nullable();
         });
     }
 
@@ -22,6 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('amenities');
+        Schema::table('rooms', function (Blueprint $table) {
+            $table->dropColumn('check_in_date');
+            $table->dropColumn('check_out_date');
+        });
     }
 };

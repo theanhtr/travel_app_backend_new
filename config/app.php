@@ -143,6 +143,8 @@ return [
         // 'store'  => 'redis',
     ],
 
+    'timezone' => 'Asia/Ho_Chi_Minh',
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

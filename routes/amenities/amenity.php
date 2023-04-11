@@ -5,7 +5,19 @@ use Illuminate\Support\Facades\Route;
 //admin amenities
 Route::apiResource('/amenities', App\Http\Controllers\AmenityController::class);
 
-Route::group(['prefix' => 'amenities', 'as' => 'amenities.'], function() {
-    // Route::get('/my-hotel-address', [App\Http\Controllers\AddressController::class, 'showMyHotelAddress']) 
-    //         ->name('showMyHotelAddress');
+Route::group(['prefix' => 'my-hotel', 'as' => 'my-hotel.'], function() {
+    Route::group(['prefix' => 'amenities', 'as' => 'amenities.'], function() {
+        Route::get('/', [App\Http\Controllers\HotelController::class, 'showAmenities'])
+            -> name('show');
+
+        Route::post('/', [App\Http\Controllers\HotelController::class, 'addAmenities'])
+            -> name('add');
+
+        Route::delete('/', [App\Http\Controllers\HotelController::class, 'deleteAmenities'])
+            -> name('delete');
+    });
 });
+
+
+
+

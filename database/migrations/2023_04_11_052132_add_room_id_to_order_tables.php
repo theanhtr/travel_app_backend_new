@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('images', function (Blueprint $table) {
-            $table->foreignId('hotel_id')->nullable()->constrained('hotels');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->foreignId('room_id')->nullable()->constrained('rooms');
         });
     }
 
     /**
      * Reverse the migrations.
-    */
+     */
     public function down(): void
     {
-        Schema::table('images', function (Blueprint $table) {
-            $table->dropForeign(['hotel_id']);
-            $table->dropColumn('hotel_id');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropForeign(['room_id']);
+            $table->dropColumn('room_id');
         });
     }
 };

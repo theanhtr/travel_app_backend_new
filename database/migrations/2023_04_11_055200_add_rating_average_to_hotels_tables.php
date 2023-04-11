@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+        Schema::table('hotels', function (Blueprint $table) {
+            $table->double('rating_average')->default(5);
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::table('hotels', function (Blueprint $table) {
+            $table->dropColumn('rating_average');
+        });
     }
 };

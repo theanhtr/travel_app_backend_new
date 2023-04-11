@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 trait HttpResponse {
-    public function success($message = "", $data = "", $statusCode = 200) {
+    public function success($message = "", $data = [], $statusCode = 200) {
         return response() -> json([
             'success' => true,
             'message' => $message,
@@ -11,7 +11,7 @@ trait HttpResponse {
         ], $statusCode);
     }
 
-    public function failure($message = "", $data = "", $statusCode = 400) {
+    public function failure($message = "", $data = [], $statusCode = 400) {
         return response() -> json([
             'success' => false,
             'message' => $message,

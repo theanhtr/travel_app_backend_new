@@ -53,6 +53,10 @@ class Hotel extends Model
             $hotel->typeRooms->each(function($typeRoom){
                 $typeRoom->delete();
              });
+            
+             $hotel->images->each(function($image){
+                $image->delete();
+             });
         });
     }
 }

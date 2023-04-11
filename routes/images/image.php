@@ -12,26 +12,30 @@ Route::group(['prefix' => 'images', 'as' => 'images.'], function() {
 
         Route::delete('/{image_id}', [App\Http\Controllers\ImageController::class, 'destroy']) 
                 ->name('destroy');
-
-        Route::post('/upload', [App\Http\Controllers\ImageController::class, 'upload']) 
-                ->name('upload');
-
-        Route::post('/upload-mutiple-image', [App\Http\Controllers\ImageController::class, 'uploadMutipleImage']) 
-                ->name('uploadMutipleImage');
 });
 
-//my-avatar
-Route::group(['prefix' => 'my-avatar', 'as' => 'my-avatar.'], function() {
-        Route::get('/', [App\Http\Controllers\ImageController::class, 'showMyAvatar']) 
+Route::group(['prefix' => 'my-hotel', 'as' => 'my-hotel.'], function() {
+    Route::group(['prefix' => 'images', 'as' => 'images.'], function() {
+        Route::get('/', [App\Http\Controllers\ImageController::class, 'showHotelImages']) 
                 ->name('show');
 
-        Route::post('/', [App\Http\Controllers\ImageController::class, 'uploadMyAvatar']) 
+        Route::post('/', [App\Http\Controllers\ImageController::class, 'uploadHotelImages']) 
                 ->name('upload');
         
-        Route::delete('/', [App\Http\Controllers\ImageController::class, 'deleteMyAvatar']) 
+        Route::delete('/', [App\Http\Controllers\ImageController::class, 'deleteHotelImages']) 
                 ->name('delete');
+    });
+
+    Route::group(['prefix' => 'type-rooms/{type_room_id}', 'as' => 'type-rooms.'], function() {
+        Route::group(['prefix' => 'images', 'as' => 'images.'], function() {
+            Route::get('/', [App\Http\Controllers\ImageController::class, 'showTypeRoomImages']) 
+                    ->name('show');
+    
+            Route::post('/', [App\Http\Controllers\ImageController::class, 'uploadTypeRoomImages']) 
+                    ->name('upload');
+            
+            Route::delete('/', [App\Http\Controllers\ImageController::class, 'deleteTypeRoomImages']) 
+                    ->name('delete');
+        });
+    });
 });
-
-
-
-
