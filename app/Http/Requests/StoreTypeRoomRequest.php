@@ -30,7 +30,8 @@ class StoreTypeRoomRequest extends FormRequest
             'occupancy' => 'required|numeric',
             //"1,2,3": id amenities
             'amenities' => 'required|string',
-            'number_of_beds' => 'required|numeric'
+            'number_of_beds' => 'required|numeric',
+            'room_size' => 'required|numeric'
         ];
     }
     

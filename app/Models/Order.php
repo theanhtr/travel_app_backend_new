@@ -25,7 +25,8 @@ class Order extends Model
         'order_status_id',
         'user_id',
         'type_room_id',
-        'hotel_id'
+        'hotel_id', 
+        'room_id'
     ];
 
     public function user():BelongsTo
@@ -46,6 +47,11 @@ class Order extends Model
     public function orderStatus():BelongsTo
     {
         return $this->belongsTo(OrderStatus::class);
+    }
+
+    public function room():BelongsTo 
+    {
+        return $this->belongsTo(Order::class);
     }
 }
 

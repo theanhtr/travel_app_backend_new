@@ -6,11 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class UpdateTypeRoomRequest extends FormRequest
+class StoreHotelOrderRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
@@ -24,14 +21,18 @@ class UpdateTypeRoomRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'string',
-            'description' => 'string',
-            'price' => 'numeric',
-            'occupancy' => 'numeric',
-            //"1,2,3": id amenities
-            'amenities' => 'required|string',
-            'number_of_beds' => 'numeric',
-            'room_size' => 'numeric',
+            'customer_name' => 'required|string',
+            'email_contact' => 'required|email',
+            'phone_number_contact' => 'required|numeric',
+            'customer_note' => 'string',
+            'total_price' => 'required|numeric|gte:0',
+            'amount_of_people' => 'required|numeric|gte:0',
+            'time_order' => 'required|date|after_or_equal:now',
+            'room_quantity' => 'required|numeric|gte:0|lte:amount_of_people',
+            'check_in_date' => 'required|date|after_or_equal:now',
+            'check_out_date' => 'required|date|after_or_equal:check_in_date',
+            'type_room_id' => 'required|numeric',
+            'hotel_id' => 'required|numeric'
         ];
     }
 

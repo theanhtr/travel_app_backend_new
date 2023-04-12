@@ -89,7 +89,8 @@ class TypeRoomController extends Controller
             'description' => $request->description ?? null,
             'price' => $request->price,
             'occupancy' => $request->occupancy,
-            'number_of_beds' => $request->number_of_beds
+            'number_of_beds' => $request->number_of_beds,
+            'room_size' => $request->room_size
         ]);
 
         $this->syncAmenities($myHotel, $typeRoom, $request -> amenities);
@@ -139,6 +140,10 @@ class TypeRoomController extends Controller
 
         if($request->number_of_beds) {
             $typeRoom->number_of_beds = $request->number_of_beds;
+        }
+
+        if($request->room_size) {
+            $typeRoom->room_size = $request->room_size;
         }
 
         $typeRoom->save();
