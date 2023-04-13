@@ -31,7 +31,7 @@
                                     </td>
                                 </tr>
                             </table>
-                            <p style="color: #666666; font-size: 16px; margin-top: 30px;">This reset number expires in 5 minutes</p>
+                            <p style="color: #666666; font-size: 16px; margin-top: 30px;">This reset number expires in <span style="color: red">15</span> minutes</p>
                         </td>
                     </tr>
                     <tr>

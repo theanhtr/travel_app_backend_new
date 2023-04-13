@@ -31,8 +31,8 @@ class ForgotPasswordController extends Controller
         
         if($dataExists) {
             //van con thoi gian
-            if ($dataExists -> created_at >= now()) {
-                return $this->failure('Please use the previous email', '', 400);
+            if ($dataExists -> next_email_at >= now()) {
+                return $this->failure('Please use the previous email');
             } else {
                 DB::table('password_reset_tokens')->where('email', $email)->delete();
             }
@@ -52,7 +52,9 @@ class ForgotPasswordController extends Controller
         DB::table('password_reset_tokens')->insert([
             'email' => $email,
             'token' => $token,
-            'created_at' => now()->addMinutes(5) 
+            'created_at' => now(),
+            'next_email_at' => now() -> addSeconds(10), 
+            'token_expire_at' => now() -> addMinutes(15)
         ]);
 
        MailController::sendEmail('mail.password_reset', ['token' => $token], $email, 'Forgot password [' . $token . ']');
@@ -74,7 +76,7 @@ class ForgotPasswordController extends Controller
             return $this->failure("Email not true");
         }
 
-        if(!($tokenExist -> created_at >= now()))  {
+        if(!($tokenExist -> token_expire_at >= now()))  {
             //het han
             DB::table('password_reset_tokens')->where('token', $token)-> delete();
             
