@@ -7,6 +7,7 @@ use App\Http\Controllers\MailController;
 use App\Models\Authentication;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\CheckTokenResetPasswordRequest;
 use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
@@ -60,6 +61,30 @@ class ForgotPasswordController extends Controller
        MailController::sendEmail('mail.password_reset', ['token' => $token], $email, 'Forgot password [' . $token . ']');
 
        return $this->success('Send email reset password reset. Check your mail', '', 200);
+    }
+
+    public function checkTokenResetPassword(CheckTokenResetPasswordRequest $request) {
+        $token = $request -> token;
+        $email = $request -> email;
+        $tokenExist = DB::table('password_reset_tokens')->where('token', $token)->first();
+
+        //validate token exists
+        if(!($tokenExist)) {
+            return $this->failure('Token not found');
+        }
+
+        if(!($tokenExist -> email == $email)) {
+            return $this->failure("Email not true");
+        }
+
+        if(!($tokenExist -> token_expire_at >= now()))  {
+            //het han
+            DB::table('password_reset_tokens')->where('token', $token)-> delete();
+            
+            return $this->failure("Token has expired");
+        }
+
+        return $this->success('Token ok');
     }
 
     public function resetPassword(ResetPasswordRequest $request) {
