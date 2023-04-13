@@ -25,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         TypeRoom::class => HotelPolicy::class,
         Room::class => HotelPolicy::class,
         Amenity::class => AmenityPolicy::class,
+        Order::class => OrderPolicy::class,
     ];
 
     /**

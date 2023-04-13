@@ -11,9 +11,6 @@ Route::group(['prefix' => 'my-hotel', 'as' => 'my-hotel.'], function() {
 
         // Route::post('/delete-rooms', [App\Http\Controllers\RoomController::class, 'deleteRooms'])
         //     -> name('delete');
-
-        Route::post('/change-availablity/{room_id}', [App\Http\Controllers\RoomController::class, 'changeAvailablity'])
-            -> name('changeAvailablity');
     });
 });
 

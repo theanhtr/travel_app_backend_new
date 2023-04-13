@@ -65,4 +65,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Hotel::class);
     }
+
+    
+    public function orders():Relations\HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
 }

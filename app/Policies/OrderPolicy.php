@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helper\GetRoleIdHelper;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -29,7 +30,7 @@ class OrderPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->role_id == GetRoleIdHelper::getCustomerRoleId();
     }
 
     /**

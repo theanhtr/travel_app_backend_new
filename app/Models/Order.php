@@ -26,7 +26,8 @@ class Order extends Model
         'user_id',
         'type_room_id',
         'hotel_id', 
-        'room_id'
+        'room_id',
+        'amount_of_people'
     ];
 
     public function user():BelongsTo
@@ -51,7 +52,7 @@ class Order extends Model
 
     public function room():BelongsTo 
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Room::class);
     }
 }
 
