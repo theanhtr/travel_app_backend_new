@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('amenities', function (Blueprint $table) {
+        Schema::create('interact_reivews', function (Blueprint $table) {
             $table->id();
+            $table->boolean('is_like');
+            $table->boolean('is_report');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('review_id')->constrained('reviews');
             $table->timestamps();
         });
     }
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('amenities');
+        Schema::dropIfExists('interact_reivews');
     }
 };

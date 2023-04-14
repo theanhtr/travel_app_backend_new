@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+        Schema::table('images', function (Blueprint $table) {
+            $table -> foreignId('review_id') -> nullable() -> constrained('reviews');
         });
     }
 
@@ -22,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::table('images', function (Blueprint $table) {
+            $table -> dropForeign(['review_id']);
+            $table -> dropColumn('review_id');
+        });
     }
 };

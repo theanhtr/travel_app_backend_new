@@ -156,4 +156,15 @@ class OrderController extends Controller
     public function paidCancel() {
 
     }
+
+    public function ordersNeedReview() {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
+        $orders_need_review = $user -> orders() -> where('order_status_id', '=', GetOrderStatusIdHelper::getAwaitingFeedbackOrderStatusId()) -> get();
+
+        return $this->success('Get ok', $orders_need_review);
+    }
 }

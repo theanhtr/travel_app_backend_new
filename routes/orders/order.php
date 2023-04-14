@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-//file
 Route::group(['prefix' => 'orders', 'as' => 'orders.'], function() {
         Route::get('/get-all-hotel-order', [App\Http\Controllers\OrderController::class, 'getAllHotelOrder'])
                 ->name('getAllHotelOrder');
@@ -15,4 +14,7 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function() {
 
         Route::post('/unpaid-hotel-cancel/{order_id}', [App\Http\Controllers\OrderController::class, 'unpaidHotelCancel'])
                 ->name('unpaidHotelCancel');
+
+        Route::get('/orders-need-review', [App\Http\Controllers\OrderController::class, 'ordersNeedReview'])
+                ->name('ordersNeedReview');
 });

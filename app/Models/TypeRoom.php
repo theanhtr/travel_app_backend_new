@@ -40,6 +40,11 @@ class TypeRoom extends Model
         return $this->hasMany(Room::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public static function boot() 
     {
         parent::boot();

@@ -58,5 +58,10 @@ class Order extends Model
     {
         return $this->hasMany(RoomReservationTime::class);
     }
+
+    public function review():HasOne
+    {
+        return $this->hasOne(Review::class);
+    }
 }
 

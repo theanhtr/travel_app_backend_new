@@ -15,109 +15,45 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Helper\GetRoleImageIdHelper;
+use App\Helper\ImageUploadHelper;
 use App\Helper\SplitIdInString;
 use App\Http\Requests\DeleteImagesRequest;
 
 class ImageController extends Controller
 {
     use HttpResponse;
-    /**
-     * Display a listing of the resource.
-     */
-    public function upload(StoreImageRequest $request, $role_image_id, $hotel_id = null, $type_room_id = null) {
-        $user = Auth::user();
-
-        /**
-         * @var User $user
-         */
-
-        $this->authorize('create', Image::class);
-
-        $image = $request->file('image');
-        $imageName = Str::random(32) . '_' . time() . '_' . $image->getClientOriginalName();
-        $image->move(public_path('uploads'), $imageName);
-        // asset('uploads' . $imageName)
-        $imageResult = $user->images()->create([
-            'path' => $imageName,
-            'role_image_id' => $role_image_id,
-            'hotel_id' => $hotel_id,
-            'type_room_id' => $type_room_id
-        ]);
-
-        return $imageResult;
-    }
-
-    public function uploadMutipleImage(StoreMutipleImageRequest $request, $role_image_id, $hotel_id = null, $type_room_id = null) {
-        $user = Auth::user();
-
-        /**
-         * @var User $user
-         */
-
-        $this->authorize('create', Image::class);
-
-        $images = $request->file('images');
-        $imagesResult = array();
-
-        foreach($images as $image) {
-            $imageName = Str::random(32) . '_' . time() . '_' . $image->getClientOriginalName();
-
-            $image->move(public_path('uploads'), $imageName);
-
-            $imageTemp = $user->images()->create([
-                'path' => $imageName,
-                'role_image_id' => $role_image_id,
-                'hotel_id' => $hotel_id,
-                'type_room_id' => $type_room_id
-            ]);
-
-            array_push($imagesResult, $imageTemp);
-        }
-
-        return $imagesResult;
-    }
 
     public function show($image_id) {
         $image = Image::find($image_id);
 
         if(!$image) {
-            return response()->json([
-                'message' => "Image not found !!!"
-            ], 400);
+            $this->failure("Image not found");
         }
 
         $this->authorize('view', $image);
 
-        return response()->json([
-            'message' => "Get image complete",
-            "path" => asset('uploads/' . $image->path)
-        ], 200);
+        $this->success("Get image complete", ["path" => asset('uploads/' . $image->path)]);
     }
 
-    public function destroy($image_id)
-    {
+    public function destroy($image_id) {
         $image = Image::find($image_id);
 
         if(!$image) {
-            return response()->json([
-                'message' => "Image not found !!!"
-            ], 400);
+            $this->failure("Image not found");
         }
 
         $this->authorize('delete', $image);
 
         Image::destroy($image->id);
 
-        return response()->json([
-            'message' => "Delete image complete"
-        ], 200);
+        $this->success("Delete image complete");
     }
     
     public function index() {
         $this->authorize('viewAny', Image::class);
 
         $images = Image::all();
-        return response()->json(["status" => "success", "count" => count($images), "data" => $images]);
+        $this->success('ok', ["count" => count($images), "data" => $images]);
     }
 
     //user avatar
@@ -146,7 +82,7 @@ class ImageController extends Controller
          * @var User $user
          */
 
-        $image = $this->upload($request, GetRoleImageIdHelper::getAvatarRoleImageId());
+        $image = ImageUploadHelper::upload($request, GetRoleImageIdHelper::getAvatarRoleImageId());
 
         if ($user -> avatar_id) {
             $user->images()->find($user->avatar_id)->delete();
@@ -230,7 +166,7 @@ class ImageController extends Controller
             return $this->failure('Hotel of manager isnt exist');
         }
         
-        $this->uploadMutipleImage($request, GetRoleImageIdHelper::getHotelRoleImageId(), $myHotel -> id);
+        ImageUploadHelper::uploadMutipleImage($request, GetRoleImageIdHelper::getHotelRoleImageId(), $myHotel -> id);
 
         return $this->success('Upload images completed');
     }
@@ -336,7 +272,7 @@ class ImageController extends Controller
             return $this->failure('Type room isnt exist');
         }
         
-        $this->uploadMutipleImage($request, GetRoleImageIdHelper::getHotelRoomRoleImageId(), null, $typeRoom -> id);
+        ImageUploadHelper::uploadMutipleImage($request, GetRoleImageIdHelper::getHotelRoomRoleImageId(), null, $typeRoom -> id);
 
         return $this->success('Upload images completed');
     }

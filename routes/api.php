@@ -36,4 +36,5 @@ Route::group(['middleware' => 'auth:api'], function () {
     require __DIR__ . '/searches/search.php';
     require __DIR__ . '/searches/filter.php';
     require __DIR__ . '/orders/order.php';
+    require __DIR__ . '/orders/review.php';
 });
