@@ -26,7 +26,6 @@ class Order extends Model
         'user_id',
         'type_room_id',
         'hotel_id', 
-        'room_id',
         'amount_of_people'
     ];
 
@@ -50,9 +49,14 @@ class Order extends Model
         return $this->belongsTo(OrderStatus::class);
     }
 
-    public function room():BelongsTo 
+    public function rooms():BelongsToMany
     {
-        return $this->belongsTo(Room::class);
+        return $this->belongsToMany(Room::class, 'room_order', 'order_id', 'room_id');
+    }
+
+    public function roomReservationTimes():HasMany
+    {
+        return $this->hasMany(RoomReservationTime::class);
     }
 }
 

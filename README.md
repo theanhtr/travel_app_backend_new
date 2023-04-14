@@ -1,11 +1,22 @@
 Start project: 
-    1) composer install
-    2) npm install 
-    3) php artisan serve --host= --port=
-    4) npm run dev -- --host=
-    5) php artisan migrate
-    6) php artisan passport:install
-    7) send request post to {{BASE_URL_HOME}}/oauth/token 
+
+composer install
+
+npm install 
+
+php artisan serve --host= --port=
+
+npm run dev -- --host=
+
+php artisan migrate
+
+php artisan db:seed
+
+php artisan passport:install
+
+php artisan schedule:work
+
+send request post to {{BASE_URL_HOME}}/oauth/token 
         with json: 
             {
                 "grant_type" : "password",
@@ -15,3 +26,5 @@ Start project:
                 "password" : "anhtran96",
                 "scope" : "*"
             }
+
+
