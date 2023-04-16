@@ -26,5 +26,7 @@ class SortBySeeder extends Seeder
         SortBy::create(['name' => 'Lowest Price', 'type' => 2]);
         SortBy::create(['name' => 'Highest Price', 'type' => 2]);
 
+        SortBy::create(['name' => 'High to Low Score', 'type' => 3]);
+        SortBy::create(['name' => 'Low to High Score', 'type' => 3]);
     }
 }

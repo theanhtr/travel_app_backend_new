@@ -24,6 +24,5 @@ class OrderStatusSeeder extends Seeder
         OrderStatus::create(['name' => 'Awaiting Feedback']);
         OrderStatus::create(['name' => 'Under Development']);
         OrderStatus::create(['name' => 'Error']);
-
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\CheckRoomIsAvailablity;
 use App\Helper\GetHotelsByAddress;
 use App\Http\Requests\SearchHotelsRequest;
 use App\Http\Requests\SearchTypeRoomsRequest;
@@ -56,27 +57,12 @@ class SearchController extends Controller
                 /**
                  * @var Room $room
                  */
-                $room_reservation_times = $room -> roomReservationTimes() -> get();
 
-                if(!$room_reservation_times) {
-                    $count_availablity_room ++; 
-                } else {
-                    $availablity = true;
-                    foreach($room_reservation_times as $room_reservation_time) {
-                        $room_check_in_date = new DateTime($room_reservation_time -> check_in_date);
-                        $room_check_out_date = new DateTime($room_reservation_time -> check_out_date);
+                 $availablity = CheckRoomIsAvailablity::checkRoomIsAvailablity($room, $check_in_date, $check_out_date);
 
-                        if($room_check_in_date -> getTimestamp() < $check_in_date -> getTimestamp() && $room_check_out_date -> getTimestamp() > $check_in_date -> getTimestamp()
-                        || $room_check_in_date -> getTimestamp() < $check_out_date -> getTimestamp() && $room_check_out_date -> getTimestamp() > $check_out_date -> getTimestamp()) {
-                            $availablity = false;
-                            break;
-                        }
-                    }
-                    
-                    if($availablity) {
-                        $count_availablity_room ++;
-                    }
-                }   
+                if($availablity) {
+                    $count_availablity_room++;
+                }
             }
 
             if($count_availablity_room < $room_quantity) {

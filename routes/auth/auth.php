@@ -12,8 +12,8 @@ Route::group(['prefix' => 'auth', 'as' => 'auth.'], function() {
     Route::post('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'forgotPassword'])
         ->name('forgotPassword');
 
-    Route::get('/reset-password/{token}', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'viewResetPassword'])
-        ->name('viewResetPassword');
+    Route::post('/check-token-reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'checkTokenResetPassword'])
+        ->name('checkTokenResetPassword');
 
     Route::post('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'resetPassword'])
         ->name('resetPassword');

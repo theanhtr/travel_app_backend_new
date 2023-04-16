@@ -17,6 +17,7 @@ class Image extends Model
         'role_image_id',
         'hotel_id',
         'type_room_id', 
+        'review_id',
         'user_id'
     ];
 
@@ -38,5 +39,10 @@ class Image extends Model
     public function typeRoom(): Relations\BelongsTo
     {
         return $this->belongsTo(TypeRoom::class);
+    }
+
+    public function review(): Relations\BelongsTo
+    {
+        return $this->belongsTo(Review::class);
     }
 }

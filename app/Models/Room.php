@@ -26,4 +26,9 @@ class Room extends Model
     {
         return $this->hasMany(RoomReservationTime::class);
     }
+
+    public function orders(): BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'room_order', 'room_id', 'order_id');
+    }
 }

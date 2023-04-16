@@ -61,4 +61,14 @@ class GetSortByIdHelper {
     {
         return SortBy::where([['name', '=', 'Lowest Price'], ['type', '=', 2]])->first()->id;
     }
+
+    public static function getHightoLowScoreReviewRoleId(): int
+    {
+        return SortBy::where([['name', '=', 'High to Low Score'], ['type', '=', 3]])->first()->id;
+    }
+
+    public static function getLowtoHighScoreReviewRoleId(): int
+    {
+        return SortBy::where([['name', '=', 'Low to High Score'], ['type', '=', 3]])->first()->id;
+    }
 }

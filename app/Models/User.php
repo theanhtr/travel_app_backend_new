@@ -6,6 +6,10 @@ use App\Traits\HttpResponse;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -46,23 +50,39 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function information(): Relations\HasOne 
+    public function information(): HasOne 
     {
         return $this->hasOne(UserInformation::class);
     }
 
-    public function role():Relations\BelongsTo
+    public function role():BelongsTo
     {
         return $this->belongsTo(Role::class);    
     }
 
-    public function images(): Relations\HasMany
+    public function images(): HasMany
     {
         return $this->hasMany(Image::class);
     }
 
-    public function hotel(): Relations\HasOne
+    public function hotel(): HasOne
     {
         return $this->hasOne(Hotel::class);
+    }
+
+    
+    public function orders():HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function interactReivews():BelongsToMany
+    {
+        return $this->belongsToMany(Review::class, 'interact_reivews', 'user_id', 'review_id');
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 }

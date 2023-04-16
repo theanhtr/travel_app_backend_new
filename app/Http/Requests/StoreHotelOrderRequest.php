@@ -6,11 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class ResetPasswordRequest extends FormRequest
+class StoreHotelOrderRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
@@ -24,9 +21,17 @@ class ResetPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|confirmed',
-            'token' => 'required|numeric'
+            'customer_name' => 'required|string',
+            'email_contact' => 'required|email',
+            'phone_number_contact' => 'required|numeric',
+            'customer_note' => 'nullable|string',
+            'total_price' => 'required|numeric|gte:0',
+            'amount_of_people' => 'required|numeric|gte:0',
+            'room_quantity' => 'required|numeric|gte:0|lte:amount_of_people',
+            'check_in_date' => 'required|date|after_or_equal:now',
+            'check_out_date' => 'required|date|after_or_equal:check_in_date',
+            'type_room_id' => 'required|numeric',
+            'hotel_id' => 'required|numeric'
         ];
     }
 
@@ -37,5 +42,5 @@ class ResetPasswordRequest extends FormRequest
             'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
         ], 500));
-    }   
+    }
 }

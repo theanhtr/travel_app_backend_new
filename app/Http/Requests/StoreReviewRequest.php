@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class ResetPasswordRequest extends FormRequest
+class StoreReviewRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,15 @@ class ResetPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|confirmed',
-            'token' => 'required|numeric'
+            'comment' => 'string|nullable',
+            'star_rating' => "required|numeric|in:1,2,3,4,5",
+            'user_private' => 'boolean|nullable',
+            'order_id' => 'required|numeric',
+            'images' => 'required|array',
+            'images.*' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ];
     }
-
+            
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
@@ -37,5 +40,5 @@ class ResetPasswordRequest extends FormRequest
             'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
         ], 500));
-    }   
+    }
 }

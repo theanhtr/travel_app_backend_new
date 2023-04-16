@@ -7,6 +7,7 @@ use App\Http\Controllers\MailController;
 use App\Models\Authentication;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\CheckTokenResetPasswordRequest;
 use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
@@ -31,66 +32,86 @@ class ForgotPasswordController extends Controller
         
         if($dataExists) {
             //van con thoi gian
-            if ($dataExists -> created_at >= now()) {
-                return $this->failure('Please use the previous email', '', 400);
+            if ($dataExists -> next_email_at >= now()) {
+                return $this->failure('Please use the previous email');
             } else {
                 DB::table('password_reset_tokens')->where('email', $email)->delete();
             }
         }
         
-        $token = Str::random(100);
+        $tokenExist = true;
+        $token = 000000;
+
+        while($tokenExist) {
+            $max = pow(10, 6) - 1; 
+            $random_number = rand(0, $max);
+            $token = str_pad($random_number, 6, '0', STR_PAD_LEFT);
+
+            $tokenExist = DB::table('password_reset_tokens')->where('token', $token)->first() ? true : false;
+        }
 
         DB::table('password_reset_tokens')->insert([
             'email' => $email,
             'token' => $token,
-            'created_at' => now()->addminutes(5) 
+            'created_at' => now(),
+            'next_email_at' => now() -> addSeconds(10), 
+            'token_expire_at' => now() -> addMinutes(15)
         ]);
 
-       MailController::sendEmail('mail.password_reset', ['token' => $token], $email, 'Forgot password');
+       MailController::sendEmail('mail.password_reset', ['token' => $token], $email, 'Forgot password [' . $token . ']');
 
        return $this->success('Send email reset password reset. Check your mail', '', 200);
     }
 
-    public function viewResetPassword($token) {
-        return view('password_reset', ['token' => $token]);
-    }
-
-    public function resetPassword(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|confirmed',
-            'token' => 'required' 
-        ]);
-    
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-
-            return view('password_reset_fail', ['error' => $errors->first()]);
-        }
-
+    public function checkTokenResetPassword(CheckTokenResetPasswordRequest $request) {
         $token = $request -> token;
         $email = $request -> email;
-        $dataExists = DB::table('password_reset_tokens')->where('token', $token)->first();
+        $tokenExist = DB::table('password_reset_tokens')->where('token', $token)->first();
 
         //validate token exists
-        if(!($dataExists)) {
-            return view('password_reset_fail', ['error' => "Token not found !!!"]);
+        if(!($tokenExist)) {
+            return $this->failure('Token not found');
         }
 
-        if(!($dataExists -> email == $email)) {
-            return view('password_reset_fail', ['error' => "Email not true !!!"]);
+        if(!($tokenExist -> email == $email)) {
+            return $this->failure("Email not true");
         }
 
-        if(!($dataExists -> created_at >= now()))  {
+        if(!($tokenExist -> token_expire_at >= now()))  {
+            //het han
             DB::table('password_reset_tokens')->where('token', $token)-> delete();
             
-            return view('password_reset_fail', ['error' => "Token has expired !!!"]);
+            return $this->failure("Token has expired");
+        }
+
+        return $this->success('Token ok');
+    }
+
+    public function resetPassword(ResetPasswordRequest $request) {
+        $token = $request -> token;
+        $email = $request -> email;
+        $tokenExist = DB::table('password_reset_tokens')->where('token', $token)->first();
+
+        //validate token exists
+        if(!($tokenExist)) {
+            return $this->failure('Token not found');
+        }
+
+        if(!($tokenExist -> email == $email)) {
+            return $this->failure("Email not true");
+        }
+
+        if(!($tokenExist -> token_expire_at >= now()))  {
+            //het han
+            DB::table('password_reset_tokens')->where('token', $token)-> delete();
+            
+            return $this->failure("Token has expired");
         }
 
         $user = User::where('email', $email) -> first();
 
         if(!$user) {
-            return view('password_reset_fail', ['error' => "User does not exists !!!"]);
+            return $this->failure("User does not exists");
         }
 
         $user->password = Hash::make($request -> password);
@@ -98,6 +119,6 @@ class ForgotPasswordController extends Controller
 
         DB::table('password_reset_tokens')->where('token', $token)-> delete();
 
-        return view('password_reset_success');
+        return $this->success('Password has been updated');
     }
 }

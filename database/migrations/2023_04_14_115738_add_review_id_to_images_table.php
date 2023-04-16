@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->foreignId('room_id')->nullable()->constrained('rooms');
+        Schema::table('images', function (Blueprint $table) {
+            $table -> foreignId('review_id') -> nullable() -> constrained('reviews');
         });
     }
 
@@ -21,9 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['room_id']);
-            $table->dropColumn('room_id');
+        Schema::table('images', function (Blueprint $table) {
+            $table -> dropForeign(['review_id']);
+            $table -> dropColumn('review_id');
         });
     }
 };
