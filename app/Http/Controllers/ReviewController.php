@@ -86,7 +86,17 @@ class ReviewController extends Controller
         }
 
         $hotel_reviews = GetHotelReviews::getHotelReviews($hotel);
+        
+        $reviews_response['reviews'] = $hotel_reviews;
 
-        return $this->success('Get ok', $hotel_reviews);
+        $reviews_response['count_rating'] = $hotel -> reviews() -> count();
+        $reviews_response['five_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 5) -> count();
+        $reviews_response['four_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 4) -> count();
+        $reviews_response['three_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 3) -> count();
+        $reviews_response['two_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 2) -> count();
+        $reviews_response['one_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 1) -> count();
+        $reviews_response['rating_average'] = $hotel -> rating_average;
+        
+        return $this->success('Get ok', $reviews_response);
     }
 }

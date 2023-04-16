@@ -41,13 +41,6 @@ class GetHotelReviews {
             $hotel_review['images'] = $images;
         }
 
-        $hotel_reviews['count_rating'] = $hotel -> reviews() -> count();
-        $hotel_reviews['five_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 5) -> count();
-        $hotel_reviews['four_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 4) -> count();
-        $hotel_reviews['three_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 3) -> count();
-        $hotel_reviews['two_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 2) -> count();
-        $hotel_reviews['one_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 1) -> count();
-
         return $hotel_reviews;
     }
 }

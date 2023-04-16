@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class FilterHotelsRequest extends FormRequest
+class FilterReviewsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,14 +24,10 @@ class FilterHotelsRequest extends FormRequest
     public function rules()
     {
         return [
-            'province_id' => 'numeric',
-            'district_id' => 'numeric',
-            'sub_district_id' => 'numeric',
-            'budget_from' => 'required|numeric',
-            'budget_to' => 'required|numeric|gte:budget_from',
-            'rating_average' => 'required|numeric|in:1,2,3,4,5',
-            'amenities' => 'string|nullable',
-            'sort_by_id' => 'numeric'
+            'hotel_id' => 'required|numeric',
+            'type_id' => 'nullable|numeric',
+            'sort_by_id' => 'nullable|numeric',
+            'star_rating' => "nullable|numeric|in:1,2,3,4,5",
         ];
     }
     
