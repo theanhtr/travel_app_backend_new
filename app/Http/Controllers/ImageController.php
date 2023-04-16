@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Helper\GetRoleImageIdHelper;
+use App\Helper\ImageGetHelper;
 use App\Helper\ImageUploadHelper;
 use App\Helper\SplitIdInString;
 use App\Http\Requests\DeleteImagesRequest;
@@ -135,18 +136,9 @@ class ImageController extends Controller
          * @var Hotel $myHotel
          */
 
-        $images = $myHotel -> images()->get();
+        $images = ImageGetHelper::imageGetHelper($myHotel);
 
-        $imagesResponse = array();
-
-        foreach($images as $image) {
-            $image_temp = array();
-            $image_temp["id"] = $image->id;
-            $image_temp["path"] = asset('uploads/' . $image->path);
-            array_push($imagesResponse, $image_temp);
-        }
-
-        return $this->success("Get image complete", $imagesResponse);
+        return $this->success("Get image complete", $images);
     }
 
     public function uploadHotelImages(StoreMutipleImageRequest $request) {
@@ -231,18 +223,9 @@ class ImageController extends Controller
             return $this->failure('Type room isnt exist');
         }
 
-        $images = $typeRoom -> images()->get();
+        $images = ImageGetHelper::imageGetHelper($typeRoom);
 
-        $imagesResponse = array();
-
-        foreach($images as $image) {
-            $image_temp = array();
-            $image_temp["id"] = $image->id;
-            $image_temp["path"] = asset('uploads/' . $image->path);
-            array_push($imagesResponse, $image_temp);
-        }
-
-        return $this->success("Get image complete", $imagesResponse);
+        return $this->success("Get image complete", $images);
     }
 
     public function uploadTypeRoomImages($type_room_id, StoreMutipleImageRequest $request) {

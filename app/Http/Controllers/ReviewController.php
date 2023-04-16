@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\GetHotelReviews;
 use App\Helper\GetOrderStatusIdHelper;
 use App\Helper\GetRoleImageIdHelper;
+use App\Helper\ImageGetHelper;
 use App\Helper\ImageUploadHelper;
 use App\Models\Hotel;
+use App\Models\Image;
 use App\Models\Order;
 use App\Models\Review;
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
+use App\Models\SortBy;
 use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -55,18 +59,9 @@ class ReviewController extends Controller
         
         ImageUploadHelper::uploadMutipleImage($request, GetRoleImageIdHelper::getRatingRoleImageId(), null, null, $review -> id);
 
-        $images_review = $review -> images()->get();
+        $images_review = ImageGetHelper::imageGetHelper($review);
 
-        $imagesResponse = array();
-
-        foreach($images_review as $image) {
-            $image_temp = array();
-            $image_temp["id"] = $image->id;
-            $image_temp["path"] = asset('uploads/' . $image->path);
-            array_push($imagesResponse, $image_temp);
-        }
-
-        $review['images'] = $imagesResponse;
+        $review['images'] = $images_review;
 
         $hotel = $review -> hotel() -> first();
         /**
@@ -90,28 +85,8 @@ class ReviewController extends Controller
             return $this->failure('Hotel is not exist');
         }
 
-        $hotel_reviews = $hotel -> reviews() -> get();
-
-        foreach($hotel_reviews as $hotel_review) {
-            $hotel_review['type_room_name'] = $hotel_review -> typeRoom() -> first() -> name;
-
-            $user = $hotel_review -> user() -> first();
-            /**
-             * @var User $user
-             */
-            $user_infor = $user -> information() -> first();
-            
-            if($hotel_review -> user_private) {
-                $hotel_review['user_name'] = $user_infor -> first_name . ' ' . $user_infor -> last_name;
-            } else {
-                $hotel_review['user_name'] = $user_infor -> first_name[0] . '**' . $user_infor -> last_name[0] . '**';
-            }
-        }
+        $hotel_reviews = GetHotelReviews::getHotelReviews($hotel);
 
         return $this->success('Get ok', $hotel_reviews);
-    }
-
-    public function updateReview() {
-        
     }
 }

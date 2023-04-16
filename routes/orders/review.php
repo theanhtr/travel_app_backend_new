@@ -8,7 +8,7 @@ Route::group(['prefix' => 'reviews', 'as' => 'reviews.'], function() {
 
         Route::get('/all-hotel-review/{hotel_id}', [App\Http\Controllers\ReviewController::class, 'allHotelReview'])
                 ->name('allHotelReview');
-
+                
         // Route::get('/show-hotel-order/{order_id}', [App\Http\Controllers\ReviewController::class, 'showHotelOrder'])
         //         ->name('showHotelOrder');
         

@@ -25,7 +25,7 @@ class StoreReviewRequest extends FormRequest
     {
         return [
             'comment' => 'string|nullable',
-            'star_rating' => 'required|numeric',
+            'star_rating' => "required|numeric|in:1,2,3,4,5",
             'user_private' => 'boolean|nullable',
             'order_id' => 'required|numeric',
             'images' => 'required|array',
