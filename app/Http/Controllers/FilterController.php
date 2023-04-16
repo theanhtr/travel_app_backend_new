@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\GetHotelReviews;
 use App\Helper\GetHotelsByAddress;
 use App\Helper\GetSortByIdHelper;
 use App\Helper\SortObjectHelper;
 use App\Helper\SplitIdInString;
 use App\Http\Controllers\SearchController;
 use App\Http\Requests\FilterHotelsRequest;
+use App\Http\Requests\FilterReviewsRequest;
 use App\Models\Hotel;
+use App\Models\Review;
 use App\Models\SortBy;
+use App\Models\TypeFilterReview;
 use App\Traits\HttpResponse;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -20,8 +24,8 @@ class FilterController extends Controller
     use HttpResponse;
 
     //hotel
-    public function getHotelSortBy() {
-        return $this->success('Get ok', SortBy::where('type', 1)->get());
+    public function hotelFilterOption() {
+        return $this->success('Get ok', ['sort_by' => SortBy::where('type', 1)->get()]);
     }
 
     public function checkAmenities(Hotel $hotel, $amenities) {
@@ -39,11 +43,11 @@ class FilterController extends Controller
     public function hotelSortBy($hotels, $sort_by_id) {
         $hotelsResult = $hotels;
         if($sort_by_id == GetSortByIdHelper::getHighestPriceHotelRoleId()) {
-            $hotelsResult = SortObjectHelper::sortObjectHelper($hotels, "max_price", true);
+            $hotelsResult = $hotels->sortByDesc("max_price");
         } else if($sort_by_id == GetSortByIdHelper::getLowestPriceHotelRoleId()) {
-            $hotelsResult = SortObjectHelper::sortObjectHelper($hotels, "max_price");
+            $hotelsResult = $hotels->sortBy("max_price");
         } else if($sort_by_id == GetSortByIdHelper::getHighestRatingHotelRoleId()) {
-            $hotelsResult = SortObjectHelper::sortObjectHelper($hotels, "rating_average", true);
+            $hotelsResult = $hotels->sortByDesc("rating_average");
         } else if($sort_by_id == GetSortByIdHelper::getNearestDistanceHotelRoleId()) {
             $hotelsResult = $hotels;
         }
@@ -66,7 +70,7 @@ class FilterController extends Controller
             
             if($hotel->min_price >= $request -> budget_from
                && $hotel -> max_price <= $request -> budget_to
-               && $hotel -> rating_average >= $request -> hotel_class
+               && $hotel -> rating_average >= $request -> rating_average
                && $this->checkAmenities($hotel, $amenities)
             ) {
                 array_push($hotelsByFilter, $hotel);
@@ -77,44 +81,106 @@ class FilterController extends Controller
             return $this->failure('Sort by type wrong');
         }
 
+        $hotelsByFilter = collect($hotelsByFilter);
         $hotelsByFilter = $this->hotelSortBy($hotelsByFilter, $request->sort_by_id);
 
         return $this->success("Filter hotels success", $hotelsByFilter);
     }
 
     //review
-    public function getReviewSortBy() {
-        return $this->success('Get ok', SortBy::where('type', 3)->get());
+    public function reviewFilterOption() {
+        $sort_by = SortBy::where('type', 3)->get();
+        $type = TypeFilterReview::get();
+        return $this->success('Get ok', ['sort_by' => $sort_by, 'type_review' => $type]);
     }
 
-    public function filterReviews(FilterHotelsRequest $request) {
-        $hotels = Hotel::all();
-        
-        $hotelsByAddress = GetHotelsByAddress::getHotelsByAddress($hotels, $request -> province_id, $request -> district_id, $request -> sub_district_id);
+    public function reviewsWithType($reviews, $type_id) {
+        $reviewsResult = array();
 
-        $hotelsByFilter = array();
+        if($type_id == 1) { //all
+            return $reviews;
+        }
 
-        foreach($hotelsByAddress as $hotel) {
+        foreach($reviews as $review) {
             /**
-             * @var Hotel $hotel
+             * @var Review $review
              */
-            $amenities = SplitIdInString::splitIdInString((string)$request->amenities);
-            
-            if($hotel->min_price >= $request -> budget_from
-               && $hotel -> max_price <= $request -> budget_to
-               && $hotel -> rating_average >= $request -> hotel_class
-               && $this->checkAmenities($hotel, $amenities)
-            ) {
-                array_push($hotelsByFilter, $hotel);
+            if($type_id == 2) { //with comment
+                if($review -> comment) {
+                    array_push($reviewsResult, $review);
+                }
+            } else if($type_id == 3) { //with photos
+                if($review -> images() -> exists()) {
+                    array_push($reviewsResult, $review);
+                }
+            }
+        }
+        
+        return $reviewsResult;
+    }
+
+    public function reviewsSortBy($reviews, $sort_by_id) {
+        $reviewsResult = $reviews;
+        if($sort_by_id == GetSortByIdHelper::getHightoLowScoreReviewRoleId()) {
+            $reviewsResult = $reviews->sortByDesc('star_rating');
+        } else if($sort_by_id == GetSortByIdHelper::getLowtoHighScoreReviewRoleId()) {
+            $reviewsResult = $reviews->sortBy('star_rating');
+        } 
+        
+        return $reviewsResult;
+    }
+
+    public function filterReviews(FilterReviewsRequest $request) {
+        $hotel = Hotel::find($request -> hotel_id);
+
+        if(!$hotel) {
+            return $this->failure('Hotel is not exist');
+        }
+
+        $hotel_reviews = GetHotelReviews::getHotelReviews($hotel);
+        
+        $hotel_reviews_filter = array();
+
+        //rating
+        foreach($hotel_reviews as $review) {
+            /**
+             * @var Review $review
+             */
+
+            if($request -> star_rating) {
+                if($review -> star_rating == (int)$request -> star_rating) {
+                    array_push($hotel_reviews_filter, $review);
+                }
+            } else {
+                array_push($hotel_reviews_filter, $review);
             }
         }
 
-        if (!SortBy::where([['id', $request->sort_by_id], ['type', 1]])->first()) {
+        //type: all, comment, image
+        if (!TypeFilterReview::find($request -> type_id)) {
+            return $this->failure('Type wrong');
+        }
+
+        $hotel_reviews_filter = $this -> reviewsWithType($hotel_reviews_filter, $request->type_id);
+
+        if (!SortBy::where([['id', $request->sort_by_id], ['type', 3]])->first()) {
             return $this->failure('Sort by type wrong');
         }
 
-        $hotelsByFilter = $this->hotelSortBy($hotelsByFilter, $request->sort_by_id);
-
-        return $this->success("Filter hotels success", $hotelsByFilter);
+        //sort
+        $hotel_reviews_filter = collect($hotel_reviews_filter);
+        $hotel_reviews_filter = $this->reviewsSortBy($hotel_reviews_filter, $request->sort_by_id);
+        
+        $reviews_response['reviews'] = $hotel_reviews_filter;
+        
+        $reviews_response['count_rating'] = $hotel -> reviews() -> count();
+        $reviews_response['five_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 5) -> count();
+        $reviews_response['four_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 4) -> count();
+        $reviews_response['three_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 3) -> count();
+        $reviews_response['two_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 2) -> count();
+        $reviews_response['one_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 1) -> count();
+        $reviews_response['rating_average'] = $hotel -> rating_average;
+        
+        return $this->success("Filter reviews success", $reviews_response);
     }
 }

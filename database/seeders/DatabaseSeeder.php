@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AmenitySeeder::class);
         $this->call(OrderStatusSeeder::class);
         $this->call(SortBySeeder::class);
+        $this->call(TypeFilterReviewSeeder::class);
     }
 }
