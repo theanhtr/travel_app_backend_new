@@ -20,7 +20,7 @@ class ImageUploadHelper {
          */
 
         $image = $request->file('image');
-        $imageName = Str::random(32) . '_' . time() . '_' . $image->getClientOriginalName();
+        $imageName = Str::random(32) . '_' . time() . '_' . str_replace(' ', '', $image->getClientOriginalName());
         $image->move(public_path('uploads'), $imageName);
         
         $imageResult = $user->images()->create([

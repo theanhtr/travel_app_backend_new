@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Helper\CheckRoomIsAvailablity;
 use App\Helper\GetHotelsByAddress;
+use App\Helper\ImageGetHelper;
 use App\Http\Requests\SearchHotelsRequest;
 use App\Http\Requests\SearchTypeRoomsRequest;
 use App\Models\Address;
+use App\Models\District;
 use App\Models\Hotel;
+use App\Models\Province;
 use App\Models\Room;
+use App\Models\SubDistrict;
 use App\Traits\HttpResponse;
 use DateTime;
 use Illuminate\Http\Request;
@@ -20,6 +24,23 @@ class SearchController extends Controller
         $hotels = Hotel::all();
         
         $hotelsFilter = GetHotelsByAddress::getHotelsByAddress($hotels, $request -> province_id, $request -> district_id, $request -> sub_district_id);
+
+        foreach($hotels as $hotel) {
+            $hotel['images'] = ImageGetHelper::imageGetHelper($hotel);
+            $hotel['count_review'] = $hotel -> reviews() -> count();
+
+            $address = Address::find($hotel -> address_id);
+
+            if($address) {
+                $addressResponse = array();
+                $addressResponse['specific_address'] = $address -> specific_address;
+                $addressResponse['province'] = Province::find($address->province_id)->name;
+                $addressResponse['district'] = District::find($address->district_id)->name;
+                $addressResponse['sub_district'] = SubDistrict::find($address->sub_district_id)->name;
+            }
+
+            $hotel['address'] = $addressResponse;
+        }
 
         return $this->success("Search hotels complete", $hotelsFilter);
     }

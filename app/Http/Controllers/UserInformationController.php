@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\GetRoleImageIdHelper;
+use App\Helper\ImageUploadHelper;
 use App\Http\Requests\StoreMyInformationRequest;
 use App\Http\Requests\UpdateMyInformationRequest;
+use App\Models\Image;
 use App\Models\User;
 use App\Models\UserInformation;
 use App\Http\Requests\StoreUserInformationRequest;
@@ -57,7 +60,7 @@ class UserInformationController extends Controller
         }
 
         if(UserInformation::where('user_id', $user->id)->first()) {
-            return $this->failure('Information of user is exists');
+            return $this->failure("Information of user isn't exists");
         }
 
         $user->information()->create([
@@ -151,6 +154,14 @@ class UserInformationController extends Controller
 
         $this->authorize('view', $userInformation);
 
+        $image = Image::find($user->avatar_id);
+
+        $userInformation['avatar'] = "";
+
+        if($image) {
+            $userInformation['avatar'] = asset('uploads/' . $image->path);
+        }
+
         return $this->success("Get done", $userInformation);
     }
 
@@ -165,7 +176,7 @@ class UserInformationController extends Controller
         $userInformation = UserInformation::where('user_id', $user->id)->first();
 
         if($userInformation) {
-            return $this->failure('Information of user is exists');
+            return $this->failure('Information of user is exists, can not create new infor');
         }
 
         $user->information()->create([
@@ -176,6 +187,17 @@ class UserInformationController extends Controller
             'email_contact' => $request->email_contact ?? null
         ]);
 
+        if($request -> image) {
+            $image = ImageUploadHelper::upload($request, GetRoleImageIdHelper::getAvatarRoleImageId());
+
+            if ($user -> avatar_id) {
+                $user->images()->find($user->avatar_id)->delete();
+            }
+    
+            $user -> avatar_id = $image -> id;
+            $user -> save();
+        }
+
         return $this->success('Information of user is stored');
     }
 
@@ -185,6 +207,9 @@ class UserInformationController extends Controller
     public function updateMe(UpdateMyInformationRequest $request)
     {
         $user = Auth::user();
+        /**
+         * @var User $user
+         */
         $userInformation = UserInformation::where('user_id', $user->id)->first();
 
         if(!$userInformation) {
@@ -215,6 +240,17 @@ class UserInformationController extends Controller
 
         $userInformation->save();
 
+        if($request -> image) {
+            $image = ImageUploadHelper::upload($request, GetRoleImageIdHelper::getAvatarRoleImageId());
+
+            if ($user -> avatar_id) {
+                $user->images()->find($user->avatar_id)->delete();
+            }
+
+            $user -> avatar_id = $image -> id;
+            $user -> save();
+        }
+
         return $this->success('Information of user is updated');
     }
 
@@ -224,6 +260,10 @@ class UserInformationController extends Controller
     public function destroyMe()
     {
         $user = Auth::user();
+        /**
+         * @var User $user
+         */
+        
         $userInformation = UserInformation::where('user_id', $user->id)->first();
 
         if(!$userInformation) {
