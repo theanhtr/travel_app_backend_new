@@ -7,6 +7,7 @@ use App\Helper\GetHotelsByAddress;
 use App\Helper\ImageGetHelper;
 use App\Http\Requests\SearchHotelsRequest;
 use App\Http\Requests\SearchTypeRoomsRequest;
+use App\Http\Requests\SearchHotelsAtPopularDestinationRequest;
 use App\Models\Address;
 use App\Models\District;
 use App\Models\Hotel;
@@ -96,5 +97,30 @@ class SearchController extends Controller
         }
         
         return $this->success("Search type rooms complete", $typeRoomResponse);
+    }
+
+    public function searchHotelsAtPopularDestination(SearchHotelsAtPopularDestinationRequest $request) {
+        $hotels = Hotel::all();
+        
+        $hotelsFilter = GetHotelsByAddress::getHotelsByAddress($hotels, $request -> province_id);
+
+        foreach($hotels as $hotel) {
+            $hotel['images'] = ImageGetHelper::imageGetHelper($hotel);
+            $hotel['count_review'] = $hotel -> reviews() -> count();
+
+            $address = Address::find($hotel -> address_id);
+
+            if($address) {
+                $addressResponse = array();
+                $addressResponse['specific_address'] = $address -> specific_address;
+                $addressResponse['province'] = Province::find($address->province_id)->name;
+                $addressResponse['district'] = District::find($address->district_id)->name;
+                $addressResponse['sub_district'] = SubDistrict::find($address->sub_district_id)->name;
+            }
+
+            $hotel['address'] = $addressResponse;
+        }
+
+        return $this->success("Search hotels at popular destination complete", $hotelsFilter);
     }
 }

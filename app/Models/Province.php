@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Province extends Model
 {
@@ -19,5 +20,10 @@ class Province extends Model
     public function districts(): HasMany
     {
         return $this->hasMany(District::class);
+    }
+
+    public function popularDestination():HasOne 
+    {
+        return $this->hasOne(PopularDestination::class);
     }
 }

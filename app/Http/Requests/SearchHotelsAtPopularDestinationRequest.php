@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class StorePaymentRequest extends FormRequest
+class SearchHotelsAtPopularDestinationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,10 @@ class StorePaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount' => 'required|numeric',
-            'payment_method_id' => 'required'
+            'province_id' => 'required|numeric'
         ];
     }
-            
+
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
@@ -36,5 +35,5 @@ class StorePaymentRequest extends FormRequest
             'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
         ], 500));
-    }
+    }   
 }
