@@ -24,12 +24,20 @@ class PopularDestinationController extends Controller
 {
     use HttpResponse;
     public function getAll() {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
         $populars_destination = PopularDestination::all();
 
         foreach($populars_destination as $popular_destination) {
             $popular_destination['image_path'] = asset('images/popular_destination/' . $popular_destination->image_path);
             $popular_destination['province_name'] = Province::find($popular_destination -> province_id)->name ?? 'No name';
+            $popular_destination['is_like'] = $user -> popularDestinationsLike() -> find($popular_destination -> id) ? 1 : 0;
         }
+
+        $populars_destination = $populars_destination -> sortByDesc('is_like');
 
         return $this->success('Get popular destination done', $populars_destination);
     }

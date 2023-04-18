@@ -87,4 +87,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Review::class);
     }
+
+    public function hotelsLike():BelongsToMany
+    {
+        return $this->belongsToMany(Hotel::class, 'user_like_hotels', 'user_id', 'hotel_id');
+    }
+
+    public function popularDestinationsLike():BelongsToMany
+    {
+        return $this->belongsToMany(PopularDestination::class, 'user_like_popular_destinations', 'user_id', 'popular_destination_id');
+    }
 }
