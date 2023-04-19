@@ -29,6 +29,10 @@ class Order extends Model
         'amount_of_people'
     ];
 
+    protected $hidden = [
+        'payment_id'
+    ];
+
     public function user():BelongsTo
     {
         return $this->belongsTo(User::class);

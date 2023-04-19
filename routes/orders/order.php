@@ -17,4 +17,10 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function() {
 
         Route::get('/orders-need-review', [App\Http\Controllers\OrderController::class, 'ordersNeedReview'])
                 ->name('ordersNeedReview');
+
+        Route::post('/payment', [App\Http\Controllers\OrderController::class, 'payment'])
+                -> name('payment'); 
+                
+        Route::post('/paid-hotel-cancel/{order_id}', [App\Http\Controllers\OrderController::class, 'paidHotelCancel'])
+                ->name('paidHotelCancel');
 });

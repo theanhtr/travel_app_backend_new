@@ -7,6 +7,7 @@ use App\Helper\GetOrderStatusIdHelper;
 use App\Helper\HotelOrderHelper;
 use App\Models\Hotel;
 use App\Models\Order;
+use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\StoreHotelOrderRequest;
 use App\Http\Requests\HotelOrderCancelRequest;
 use App\Models\OrderStatus;
@@ -65,7 +66,7 @@ class OrderController extends Controller
             'email_contact' => $request->email_contact,
             'phone_number_contact' => $request->phone_number_contact,
             'customer_note' => $request->customer_note ?? null,
-            'total_price' => $request->total_price,
+            'total_price' => $typeRoom -> price * $request -> room_quantity,
             'amount_of_people' => $request->amount_of_people,
             'time_order' => new DateTime(now()->addMinutes(15)),
             'room_quantity' => $request->room_quantity,
@@ -149,12 +150,100 @@ class OrderController extends Controller
         return $this->success('Order canceled');
     }
 
-    public function payment() {
+    public function payment(StorePaymentRequest $request) {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
 
+        $order = $user -> orders() -> find($request -> order_id);
+        /**
+         * @var Order $order
+         */
+        
+        if(!$order) {
+            return $this -> failure('Order not found');
+        }
+
+        if($order -> order_status_id != GetOrderStatusIdHelper::getUnpaidOrderStatusId()) {
+            return $this -> failure('Order status not true');
+        }
+
+        if($order -> time_order < now()) {
+            return $this -> failure('Payment timeout');
+        }
+
+        try {
+            $stripe = new \Stripe\StripeClient(
+                env('STRIPE_SECRET')
+            );
+
+            $token = $stripe -> tokens -> create([
+                'card' => [
+                    'name' => $request -> name_holder_card,
+                    'address_country' => 'VN',
+                    'address_city' => $request -> address_city,
+                    'number' => $request -> number,
+                    'exp_month' =>$request -> exp_month,
+                    'exp_year' => $request -> exp_year,
+                    'cvc' => $request -> cvc,
+                ]
+            ]);
+            
+            $userStripe = $user -> createOrGetStripeCustomer();
+            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+            
+            $bill = $stripe -> charges -> create([
+                'amount' => $order -> total_price * 100,
+                'currency' => 'usd',
+                'source' => $token -> id,
+                'description' => 'test',
+            ]);
+            
+            $order -> order_status_id = 2;
+            $order -> payment_id = $bill -> id;
+            $order -> save();
+            
+            return $this->success('ok', $order);
+        } catch (\Exception $e) {
+            return $this->failure($e->getMessage());
+        }
     }
 
-    public function paidCancel() {
+    public function paidHotelCancel($order_id) {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
 
+        $order = $user -> orders() -> find($order_id);
+        /**
+         * @var Order $order
+         */
+
+        if(!$order) {
+            return $this->failure('Order not found');
+        }
+
+        if($order -> order_status_id != GetOrderStatusIdHelper::getPaidOrderStatusId()) {
+            return $this->failure('Order status is not unpaid');
+        }
+        
+        //refund
+        try {
+            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $refund = \Stripe\Refund::create([
+                'charge' => $order -> payment_id,
+                'amount' => $order -> total_price * 100,
+            ]);
+    
+            HotelOrderHelper::cancelHotelOrder($order);
+            
+            return $this->success('Order canceled', $order);
+        } catch (\Exception $e) {
+            return $this->failure($e->getMessage());
+        }
     }
 
     public function ordersNeedReview() {

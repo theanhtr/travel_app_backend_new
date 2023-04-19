@@ -24,8 +24,13 @@ class StorePaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount' => 'required|numeric',
-            'payment_method_id' => 'required'
+            'name_holder_card' => 'required|string',
+            'address_city' => 'required|string',
+            'number' => 'required',
+            'exp_month' => 'required|numeric',
+            'exp_year' => 'required|numeric',
+            'cvc' => 'required|numeric',
+            'order_id' => 'required|numeric',
         ];
     }
             
