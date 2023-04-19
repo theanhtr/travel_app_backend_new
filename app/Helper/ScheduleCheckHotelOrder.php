@@ -30,9 +30,9 @@ class ScheduleCheckHotelOrder {
         $now = new DateTime();
 
         foreach($orders as $order) {
-            $check_out_date = new DateTime($order -> check_out_date);
+            $check_in_date = new DateTime($order -> check_in_date);
 
-            if($check_out_date -> getTimeStamp() < $now -> getTimestamp()) {
+            if($check_in_date -> getTimeStamp() < $now -> getTimestamp()) {
                 HotelOrderHelper::transitionToAwaitFeedback($order->id);
             }
         }

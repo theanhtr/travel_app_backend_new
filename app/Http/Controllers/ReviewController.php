@@ -37,7 +37,7 @@ class ReviewController extends Controller
         }
 
         if(!($order -> order_status_id === GetOrderStatusIdHelper::getAwaitingFeedbackOrderStatusId())) {
-            return $this->failure('Order status is not true');
+            return $this->failure('Order status is not true, must be await feedback');
         }
 
         $review = Review::create([

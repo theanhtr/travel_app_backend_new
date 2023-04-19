@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class GetHotelsByAddress {
     use HttpResponse;
-    public static function getHotelsByAddress(Collection $hotels, $province_id, $district_id, $sub_district_id)
+    public static function getHotelsByAddress(Collection $hotels, $province_id = null, $district_id = null, $sub_district_id = null)
     {
         $hotelsFilter = array();
         

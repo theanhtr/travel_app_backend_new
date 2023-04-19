@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class UpdateMyInformationRequest extends FormRequest
+class SearchHotelsAtPopularDestinationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,15 +21,10 @@ class UpdateMyInformationRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-                'first_name' => 'string',
-                'last_name' => 'string',
-                'phone_number' => 'numeric|unique:user_information',
-                'date_of_birth' => 'date',
-                'email_contact' => 'email|unique:user_information',
-                'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
+            'province_id' => 'required|numeric'
         ];
     }
 
@@ -40,5 +35,5 @@ class UpdateMyInformationRequest extends FormRequest
             'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
         ], 500));
-    }
+    }   
 }

@@ -23,11 +23,12 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => GetRoleIdHelper::getCustomerRoleId(),
+            'email_verified_at' => now()
         ]);
 
         $this->sendEmailConfirm($user->email, $user->id);
 
-        return $this->success('Check email to confirm', '', 200);
+        return $this->success('register complete', '', 200);
     }
 
     public function sendEmailConfirm($email, $user_id) {

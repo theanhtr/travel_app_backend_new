@@ -13,7 +13,8 @@ class UserInformation extends Model
         'last_name',
         'phone_number',
         'date_of_birth',
-        'email_contact'
+        'email_contact',
+        'user_id'
     ];
 
     public function user(): Relations\BelongsTo

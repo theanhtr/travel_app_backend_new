@@ -25,7 +25,6 @@ class StoreHotelOrderRequest extends FormRequest
             'email_contact' => 'required|email',
             'phone_number_contact' => 'required|numeric',
             'customer_note' => 'nullable|string',
-            'total_price' => 'required|numeric|gte:0',
             'amount_of_people' => 'required|numeric|gte:0',
             'room_quantity' => 'required|numeric|gte:0|lte:amount_of_people',
             'check_in_date' => 'required|date|after_or_equal:now',

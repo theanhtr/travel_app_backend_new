@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class UpdateMyInformationRequest extends FormRequest
+class StorePaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,18 +21,19 @@ class UpdateMyInformationRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-                'first_name' => 'string',
-                'last_name' => 'string',
-                'phone_number' => 'numeric|unique:user_information',
-                'date_of_birth' => 'date',
-                'email_contact' => 'email|unique:user_information',
-                'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
+            'name_holder_card' => 'required|string',
+            'address_city' => 'required|string',
+            'number' => 'required',
+            'exp_month' => 'required|numeric',
+            'exp_year' => 'required|numeric',
+            'cvc' => 'required|numeric',
+            'order_id' => 'required|numeric',
         ];
     }
-
+            
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([

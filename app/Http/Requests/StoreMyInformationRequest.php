@@ -28,7 +28,8 @@ class StoreMyInformationRequest extends FormRequest
                 'last_name' => 'required|string',
                 'phone_number' => 'numeric|unique:user_information',
                 'date_of_birth' => 'date',
-                'email_contact' => 'email|unique:user_information'
+                'email_contact' => 'email|unique:user_information',
+                'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
         ];
     }
 

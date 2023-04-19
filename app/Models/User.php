@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HttpResponse;
+    use HasApiTokens, HasFactory, Notifiable, HttpResponse, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -28,7 +29,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'email',
         'password',
-        'role_id'
+        'role_id',
+        'email_verified_at'
     ];
 
     /**
@@ -84,5 +86,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function hotelsLike():BelongsToMany
+    {
+        return $this->belongsToMany(Hotel::class, 'user_like_hotels', 'user_id', 'hotel_id');
+    }
+
+    public function popularDestinationsLike():BelongsToMany
+    {
+        return $this->belongsToMany(PopularDestination::class, 'user_like_popular_destinations', 'user_id', 'popular_destination_id');
     }
 }
