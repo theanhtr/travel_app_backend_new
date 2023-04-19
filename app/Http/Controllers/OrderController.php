@@ -226,7 +226,7 @@ class OrderController extends Controller
         }
 
         if($order -> order_status_id != GetOrderStatusIdHelper::getPaidOrderStatusId()) {
-            return $this->failure('Order status is not unpaid');
+            return $this->failure('Order status is not paid');
         }
         
         //refund

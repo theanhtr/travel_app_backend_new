@@ -7,11 +7,14 @@ use App\Helper\GetOrderStatusIdHelper;
 use App\Helper\GetRoleImageIdHelper;
 use App\Helper\ImageGetHelper;
 use App\Helper\ImageUploadHelper;
+use App\Helper\SplitIdInString;
 use App\Models\Hotel;
 use App\Models\Image;
 use App\Models\Order;
 use App\Models\Review;
 use App\Http\Requests\StoreReviewRequest;
+use App\Http\Requests\LikeReviewsRequest;
+use App\Http\Requests\ReportReviewsRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Models\SortBy;
 use App\Traits\HttpResponse;
@@ -98,5 +101,63 @@ class ReviewController extends Controller
         $reviews_response['rating_average'] = $hotel -> rating_average;
         
         return $this->success('Get ok', $reviews_response);
+    }
+
+    public function likeReviews(LikeReviewsRequest $request) {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
+        $like_ids = SplitIdInString::splitIdInString($request -> like);
+        $dislike_ids = SplitIdInString::splitIdInString($request -> dislike);
+        $unlike_ids = SplitIdInString::splitIdInString($request -> unlike);
+
+        foreach($like_ids as $id) {
+            if ($user->likeReviews()->wherePivot('review_id', $id)->exists()) {
+                $user->likeReviews()->updateExistingPivot($id, ['is_like' => true]);
+            } else {
+                $user->likeReviews()->attach($id, ['is_like' => true]);
+            }
+        }
+
+        foreach($dislike_ids as $id) {
+            if ($user->likeReviews()->wherePivot('review_id', $id)->exists()) {
+                $user->likeReviews()->updateExistingPivot($id, ['is_like' => false]);
+            } else {
+                $user->likeReviews()->attach($id, ['is_like' => false]);
+            }
+        }
+
+        foreach($unlike_ids as $id) {
+            $user->likeReviews()->detach($id);
+        }
+
+        return $this -> success('Update like ok');
+    }
+
+    public function reportReviews(ReportReviewsRequest $request) {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
+        $report_ids = SplitIdInString::splitIdInString($request -> report);
+
+        $user->reportReviews()->syncWithoutDetaching($report_ids);
+        
+        foreach($report_ids as $id) {
+            $review = Review::find($id);
+            /**
+             * @var Review $review
+             */
+
+            if($review -> reportReviews() -> count() >= 5) {
+                $review -> is_block = 1;
+                $review -> save();
+            }
+        }
+
+        return $this -> success('Report ok');
     }
 }

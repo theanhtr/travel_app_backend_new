@@ -9,9 +9,9 @@ Route::group(['prefix' => 'reviews', 'as' => 'reviews.'], function() {
         Route::get('/all-hotel-review/{hotel_id}', [App\Http\Controllers\ReviewController::class, 'allHotelReview'])
                 ->name('allHotelReview');
                 
-        // Route::get('/show-hotel-order/{order_id}', [App\Http\Controllers\ReviewController::class, 'showHotelOrder'])
-        //         ->name('showHotelOrder');
+        Route::post('/like', [App\Http\Controllers\ReviewController::class, 'likesReviews'])
+                ->name('likesReviews');
         
-        // Route::post('/unpaid-hotel-cancel/{order_id}', [App\Http\Controllers\ReviewController::class, 'unpaidHotelCancel'])
-        //         ->name('unpaidHotelCancel');
+        Route::post('/report', [App\Http\Controllers\ReviewController::class, 'reportReviews'])
+                ->name('reportReviews');
 });
