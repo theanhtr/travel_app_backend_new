@@ -4,8 +4,12 @@ namespace App\Helper;
 use Illuminate\Support\Facades\Log;
 
 class SplitIdInString {
-    public static function splitIdInString(String $idString)
+    public static function splitIdInString($idString)
     {
+        if(!$idString) {
+            return [];
+        }
+
         $array_temp = array();
         $idTemp = "";
 

@@ -26,6 +26,13 @@ class Review extends Model
         'type_room_id'
     ];
 
+    protected $hidden = [
+        'can_update',
+        'user_private',
+        'is_block',
+        'order_id'
+    ];
+
     public function images():HasMany 
     {
         return $this->hasMany(Image::class);
@@ -46,9 +53,13 @@ class Review extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function interactReivews():BelongsToMany
+    public function likeReviews():BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'interact_reivews', 'review_id', 'user_id');
+        return $this->belongsToMany(User::class, 'like_reviews', 'review_id', 'user_id')->withPivot('is_like');
     }
 
+    public function reportReviews():BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'report_reviews', 'review_id', 'user_id');
+    }
 }
