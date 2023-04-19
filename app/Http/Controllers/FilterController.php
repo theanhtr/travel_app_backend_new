@@ -84,7 +84,13 @@ class FilterController extends Controller
         $hotelsByFilter = collect($hotelsByFilter);
         $hotelsByFilter = $this->hotelSortBy($hotelsByFilter, $request->sort_by_id);
 
-        return $this->success("Filter hotels success", $hotelsByFilter);
+        $hotels_response = [];
+
+        foreach ($hotelsByFilter as $value) {
+            array_push($hotels_response,$value);
+        }
+
+        return $this->success("Filter hotels success", $hotels_response);
     }
 
     //review
@@ -171,7 +177,13 @@ class FilterController extends Controller
         $hotel_reviews_filter = collect($hotel_reviews_filter);
         $hotel_reviews_filter = $this->reviewsSortBy($hotel_reviews_filter, $request->sort_by_id);
         
-        $reviews_response['reviews'] = $hotel_reviews_filter;
+        $hotels_response = [];
+
+        foreach ($hotel_reviews_filter as $value) {
+            array_push($hotels_response,$value);
+        }
+
+        $reviews_response['reviews'] = $hotels_response;
         
         $reviews_response['count_rating'] = $hotel -> reviews() -> count();
         $reviews_response['five_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 5) -> count();
