@@ -39,4 +39,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     require __DIR__ . '/users/user_like.php';
     require __DIR__ . '/orders/review.php';
     require __DIR__ . '/orders/order.php';
+    require __DIR__ . '/orders/order.php';
+    require __DIR__ . '/messages/message.php';
+    require __DIR__ . '/messages/conversation.php';
 });

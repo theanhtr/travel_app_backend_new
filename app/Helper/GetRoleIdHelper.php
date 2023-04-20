@@ -24,4 +24,9 @@ class GetRoleIdHelper {
     {
         return Role::where('name', '=', 'Airline Manager')->first()->id;
     }
+
+    public static function getTravelStaffRoleId():int
+    {
+        return Role::where('name', '=', 'Travel Staff')->first()->id;
+    }
 }

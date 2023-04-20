@@ -39,6 +39,12 @@ class PopularDestinationController extends Controller
 
         $populars_destination = $populars_destination -> sortByDesc('is_like');
 
-        return $this->success('Get popular destination done', $populars_destination);
+        $populars_destination_response = [];
+
+        foreach ($populars_destination as $value) {
+            array_push($populars_destination_response,$value);
+        }
+
+        return $this->success('Get popular destination done', $populars_destination_response);
     }
 }

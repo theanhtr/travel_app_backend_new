@@ -23,4 +23,10 @@ Route::group(['prefix' => 'auth', 'as' => 'auth.'], function() {
 
     Route::post('/re-send-email-confirm', [App\Http\Controllers\Auth\RegisterController::class, 'reSendEmailConfirm'])
         ->name('reSendEmailConfirm');
+
+    Route::post('/login/google', [App\Http\Controllers\Auth\AuthenticationController::class, 'loginGoogle'])
+        ->name('loginGoogle');
+    
+    Route::post('/login/facebook', [App\Http\Controllers\Auth\AuthenticationController::class, 'loginFacebook'])
+        ->name('loginFacebook');
 });

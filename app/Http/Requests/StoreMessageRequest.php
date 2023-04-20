@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class LikeReviewsRequest extends FormRequest
+class StoreMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,16 +21,13 @@ class LikeReviewsRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'review_id' => 'required|numeric',
-            
-            //1 - like; 2 - dislike; 3 - unlike,undislike
-            'status' => 'required|numeric|in:1,2,3'
+            'body' => 'required|string'
         ];
     }
-            
+
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([

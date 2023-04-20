@@ -15,8 +15,8 @@ use App\Models\Review;
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\LikeReviewsRequest;
 use App\Http\Requests\ReportReviewsRequest;
-use App\Http\Requests\UpdateReviewRequest;
-use App\Models\SortBy;
+use App\Http\Requests\LikeReviewsRequestTest;
+use App\Http\Requests\ReportReviewRequest;
 use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -103,7 +103,7 @@ class ReviewController extends Controller
         return $this->success('Get ok', $reviews_response);
     }
 
-    public function likeReviews(LikeReviewsRequest $request) {
+    public function likeReviewsTest(LikeReviewsRequestTest $request) {
         $user = Auth::user();
         /**
          * @var User $user
@@ -136,7 +136,7 @@ class ReviewController extends Controller
         return $this -> success('Update like ok');
     }
 
-    public function reportReviews(ReportReviewsRequest $request) {
+    public function reportReviewsTest(ReportReviewsRequest $request) {
         $user = Auth::user();
         /**
          * @var User $user
@@ -158,6 +158,73 @@ class ReviewController extends Controller
             }
         }
 
+        return $this -> success('Report ok');
+    }
+
+    public function likeReviews(LikeReviewsRequest $request) {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
+         //1 - like; 2 - dislike; 3 - unlike,undislike
+        //  'status' => 'required|numeric|in:1,2,3'
+
+        $review_id = $request -> review_id;
+        
+        $review = Review::find($review_id);
+        /**
+         * @var Review $review
+         */
+
+         if(!$review) {
+            return $this->failure('Review not found');
+        }
+
+        if($request -> status == 1) {
+            if ($user->likeReviews()->wherePivot('review_id', $review_id)->exists()) {
+                $user->likeReviews()->updateExistingPivot($review_id, ['is_like' => true]);
+            } else {
+                $user->likeReviews()->attach($review_id, ['is_like' => true]);
+            }
+        } else if($request -> status == 2) {
+            if ($user->likeReviews()->wherePivot('review_id', $review_id)->exists()) {
+                $user->likeReviews()->updateExistingPivot($review_id, ['is_like' => false]);
+            } else {
+                $user->likeReviews()->attach($review_id, ['is_like' => false]);
+            }
+        } else if($request -> status == 3) {
+            $user->likeReviews()->detach($review_id);
+        }
+
+        return $this -> success('Update like ok');
+    }
+
+    public function reportReviews(ReportReviewRequest $request) {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
+        $review_id = $request -> review_id;
+        
+        $review = Review::find($review_id);
+        /**
+         * @var Review $review
+         */
+
+        if(!$review) {
+            return $this->failure('Review not found');
+        }
+
+        $user->reportReviews()->syncWithoutDetaching($review_id);
+        
+
+        if($review -> reportReviews() -> count() >= 5) {
+            $review -> is_block = 1;
+            $review -> save();
+        }
+        
         return $this -> success('Report ok');
     }
 }

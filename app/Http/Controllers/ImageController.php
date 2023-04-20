@@ -71,7 +71,6 @@ class ImageController extends Controller
             return $this->failure("Avatar not set");
         }
 
-        $this->authorize('view', $image);
 
         return $this->success("Get image complete", ["path" => asset('uploads/' . $image->path)]);
     }
