@@ -28,5 +28,9 @@ class RoleSeeder extends Seeder
         Role::create([
             'name' => 'Airline Manager'
         ]);
+
+        Role::create([
+            'name' => 'Travel Staff'
+        ]);
     }
 }

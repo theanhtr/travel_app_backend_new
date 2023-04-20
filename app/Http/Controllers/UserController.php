@@ -55,10 +55,11 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($password),
             'role_id' => $request->role_id,
+            'email_verified_at' => now()
         ]);
 
         MailController::sendEmail('mail.email_admin_create_confirm', 
-            ['user_id' => $user->id, 'email' => $user->email, 'password' => $password], 
+            ['user_id' => $user->id, 'email' => $user->email, 'password' => $password, 'role' => Role::find($request -> role_id) -> name], 
             $user->email, 'Email Confirm');
 
         return $this->success('Created user done, need confirm email', $user, 201);

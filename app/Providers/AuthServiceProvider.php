@@ -5,8 +5,11 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\Amenity;
+use App\Models\Conversation;
 use App\Models\Review;
 use App\Policies\AmenityPolicy;
+use App\Policies\ConversationPolicy;
+use App\Policies\MessagePolicy;
 use App\Policies\UserInformationPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
@@ -28,6 +31,8 @@ class AuthServiceProvider extends ServiceProvider
         Amenity::class => AmenityPolicy::class,
         Order::class => OrderPolicy::class,
         Review::class => ReviewPolicy::class,
+        Message::class => MessagePolicy::class,
+        Conversation::class => ConversationPolicy::class,
     ];
 
     /**

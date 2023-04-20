@@ -102,4 +102,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(PopularDestination::class, 'user_like_popular_destinations', 'user_id', 'popular_destination_id');
     }
+
+    public function messages():HasMany
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function conversations():HasMany
+    {
+        return $this->hasMany(Conversation::class, 'sender_id');
+    }
 }

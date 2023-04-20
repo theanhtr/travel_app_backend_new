@@ -38,7 +38,8 @@ class AuthenticationController extends Controller
                 "email" => $user->email,
                 "token" => $token -> accessToken,
                 "token_expires_at" => $token -> token -> expires_at, 
-                "role_name" => $role_name
+                "role_name" => $role_name,
+                "role_id" => $user -> role_id
             ]
         , 200);
     }
@@ -78,6 +79,10 @@ class AuthenticationController extends Controller
 
         $user->password = Hash::make($newPassword);
         $user->save();
+
+        $user -> tokens -> each(function($token) {
+            $token -> delete();
+        });
 
         return $this->success("Password updated", "", 200);
     }

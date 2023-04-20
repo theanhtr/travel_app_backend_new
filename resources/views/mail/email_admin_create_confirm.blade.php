@@ -27,6 +27,7 @@
                             <p style="font-size: 16px; line-height: 24px; margin-bottom: 30px;">The administrator has created an account for you:</p>
                             <p style="font-size: 20px; line-height: 24px; margin-bottom: 30px;">Email: {{$email}}</p>
                             <p style="font-size: 20px; line-height: 24px; margin-bottom: 30px;">Password: {{$password}}</p>
+                            <p style="font-size: 20px; line-height: 24px; margin-bottom: 30px;">Role: {{$role}}</p>
                             <p style="font-size: 16px; line-height: 24px; margin-bottom: 30px;">Please click button below to confirm then change password in Travel App:</p>
                             <table cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
