@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\GetRoleAmenityIdHelper;
 use App\Models\Amenity;
 use App\Http\Requests\StoreAmenityRequest;
 use App\Http\Requests\UpdateAmenityRequest;
+use App\Traits\HttpResponse;
 
 class AmenityController extends Controller
 {
+    use HttpResponse;
     /**
      * Display a listing of the resource.
      */
@@ -84,5 +87,10 @@ class AmenityController extends Controller
 
         $amenity->delete();
         return response()->json('delete complete', 200);
+    }
+
+    public function showAmenitiesOfHotel() {
+        $amenities = Amenity::where('role_amenity_id', GetRoleAmenityIdHelper::getHotelRoleAmenityId())->get();
+        return $this->success('Get ok', $amenities);
     }
 }
