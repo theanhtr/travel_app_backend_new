@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use App\Helper\GetHotelReviews;
 use App\Helper\GetHotelsByAddress;
 use App\Helper\GetSortByIdHelper;
+use App\Helper\ImageGetHelper;
 use App\Helper\SortObjectHelper;
 use App\Helper\SplitIdInString;
 use App\Http\Controllers\SearchController;
 use App\Http\Requests\FilterHotelsRequest;
 use App\Http\Requests\FilterReviewsRequest;
+use App\Models\Address;
+use App\Models\District;
 use App\Models\Hotel;
+use App\Models\Province;
 use App\Models\Review;
 use App\Models\SortBy;
+use App\Models\SubDistrict;
 use App\Models\TypeFilterReview;
 use App\Traits\HttpResponse;
 use Illuminate\Database\Eloquent\Collection;
@@ -83,6 +88,23 @@ class FilterController extends Controller
 
         $hotelsByFilter = collect($hotelsByFilter);
         $hotelsByFilter = $this->hotelSortBy($hotelsByFilter, $request->sort_by_id);
+
+        foreach($hotelsByFilter as $hotel) {
+            $hotel['images'] = ImageGetHelper::imageGetHelper($hotel);
+            $hotel['count_review'] = $hotel -> reviews() -> count();
+
+            $address = Address::find($hotel -> address_id);
+
+            if($address) {
+                $addressResponse = array();
+                $addressResponse['specific_address'] = $address -> specific_address;
+                $addressResponse['province'] = Province::find($address->province_id)->name;
+                $addressResponse['district'] = District::find($address->district_id)->name;
+                $addressResponse['sub_district'] = SubDistrict::find($address->sub_district_id)->name;
+            }
+
+            $hotel['address'] = $addressResponse;
+        }
 
         $hotels_response = [];
 
