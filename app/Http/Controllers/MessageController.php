@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessageStored;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Http\Requests\StoreMessageRequest;
@@ -38,6 +39,8 @@ class MessageController extends Controller
         ]);
 
         $conversation -> last_time_message = now();
+
+        broadcast(new NewMessageStored($message)) -> toOthers();
 
         return $this->success("Send message done", $message);
     }

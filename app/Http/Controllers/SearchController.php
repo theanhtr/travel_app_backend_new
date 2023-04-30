@@ -8,6 +8,7 @@ use App\Helper\ImageGetHelper;
 use App\Http\Requests\SearchHotelsRequest;
 use App\Http\Requests\SearchTypeRoomsRequest;
 use App\Http\Requests\SearchHotelsAtPopularDestinationRequest;
+use App\Http\Requests\SearchHotelsWithFulltextRequest;
 use App\Models\Address;
 use App\Models\District;
 use App\Models\Hotel;
@@ -146,5 +147,11 @@ class SearchController extends Controller
         $hotel['amenities'] = $amenities;
 
         return $this->success("Get hotel complete", $hotel);
+    }
+
+    public function searchHotelsWithFulltext(SearchHotelsWithFulltextRequest $request) {
+        $hotels = Hotel::search($request -> search_name) -> get();
+
+        return $this->success('Search ok', $hotels);
     }
 }
