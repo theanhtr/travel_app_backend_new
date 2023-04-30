@@ -14,4 +14,7 @@ Route::group(['prefix' => 'searches', 'as' => 'searches.'], function() {
 
     Route::post('/hotels-at-popular-destination', [App\Http\Controllers\SearchController::class, 'searchHotelsAtPopularDestination'])
         ->name('searchHotelsAtPopularDestination');
+
+    Route::post('/hotels-fulltext', [App\Http\Controllers\SearchController::class, 'searchHotelsWithFulltext'])
+        ->name('searchHotelsWithFulltext');
 });
