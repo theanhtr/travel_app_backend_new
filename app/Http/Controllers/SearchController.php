@@ -15,9 +15,11 @@ use App\Models\Hotel;
 use App\Models\Province;
 use App\Models\Room;
 use App\Models\SubDistrict;
+use App\Models\User;
 use App\Traits\HttpResponse;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SearchController extends Controller
 {
@@ -145,6 +147,13 @@ class SearchController extends Controller
         
         $amenities = $hotel -> amenities() -> get();
         $hotel['amenities'] = $amenities;
+
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
+        $hotel['is_like'] = $user->hotelsLike()->wherePivot('hotel_id', $hotel_id) ->exists();
 
         return $this->success("Get hotel complete", $hotel);
     }
