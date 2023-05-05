@@ -14,7 +14,7 @@ Route::group(['prefix' => 'user-information', 'as' => 'user-information.'], func
 Route::group(['prefix' => 'my-information', 'as' => 'my-information.'], function() {
     Route::get('/', [App\Http\Controllers\UserInformationController::class, 'showMe']) -> name('show');
     Route::post('/', [App\Http\Controllers\UserInformationController::class, 'createMe']) -> name('create');
-    Route::post('/change', [App\Http\Controllers\UserInformationController::class, 'updateMe']) -> name('update');
+    Route::post('/change', [App\Http\Controllers\UserInformationController::class, 'updateMe']) -> name('update'); 
     Route::delete('/', [App\Http\Controllers\UserInformationController::class, 'destroyMe']) -> name('delete');
 
     
