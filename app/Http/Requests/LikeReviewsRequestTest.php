@@ -37,6 +37,6 @@ class LikeReviewsRequestTest extends FormRequest
             'success'   => false,
             'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
-        ], 500));
+        ], 422));
     }
 }
