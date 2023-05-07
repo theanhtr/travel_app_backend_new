@@ -26,9 +26,9 @@ class UpdateMyInformationRequest extends FormRequest
         return [
                 'first_name' => 'string',
                 'last_name' => 'string',
-                'phone_number' => 'numeric|unique:user_information',
+                'phone_number' => 'numeric',
                 'date_of_birth' => 'date',
-                'email_contact' => 'email|unique:user_information',
+                'email_contact' => 'email',
                 'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
         ];
     }
@@ -39,6 +39,6 @@ class UpdateMyInformationRequest extends FormRequest
             'success'   => false,
             'message'   => 'Invalid input parameter structure',
             'data'      => $validator->errors()
-        ], 500));
+        ], 422));
     }
 }

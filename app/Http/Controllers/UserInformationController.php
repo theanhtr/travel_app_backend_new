@@ -243,10 +243,6 @@ class UserInformationController extends Controller
         if($request -> image) {
             $image = ImageUploadHelper::upload($request, GetRoleImageIdHelper::getAvatarRoleImageId());
 
-            if ($user -> avatar_id) {
-                $user->images()->find($user->avatar_id)->delete();
-            }
-
             $user -> avatar_id = $image -> id;
             $user -> save();
         }
