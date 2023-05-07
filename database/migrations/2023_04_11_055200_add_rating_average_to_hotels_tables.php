@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('hotels', function (Blueprint $table) {
-            $table->double('rating_average')->default(5);
+            $table->double('rating_average')->default(5.0);
         });
     }
 

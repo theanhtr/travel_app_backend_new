@@ -98,7 +98,7 @@ class ReviewController extends Controller
         $reviews_response['three_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 3) -> count();
         $reviews_response['two_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 2) -> count();
         $reviews_response['one_star_rating'] = $hotel -> reviews() -> where('star_rating', '=', 1) -> count();
-        $reviews_response['rating_average'] = $hotel -> rating_average;
+        $reviews_response['rating_average'] = (Double)$hotel -> rating_average;
         
         return $this->success('Get ok', $reviews_response);
     }
