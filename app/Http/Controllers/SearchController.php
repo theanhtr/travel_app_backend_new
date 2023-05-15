@@ -96,6 +96,9 @@ class SearchController extends Controller
 
             $typeRoom["count_availablity_room"] = $count_availablity_room;
             $typeRoom["amenities"] = $typeRoom -> amenities() -> get();
+
+            $typeRoom["images"] = ImageGetHelper::imageGetHelper($typeRoom);
+
             array_push($typeRoomResponse, $typeRoom);
         }
         
