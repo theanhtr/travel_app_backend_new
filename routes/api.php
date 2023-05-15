@@ -42,4 +42,5 @@ Route::group(['middleware' => 'auth:api'], function () {
     require __DIR__ . '/orders/order.php';
     require __DIR__ . '/messages/message.php';
     require __DIR__ . '/messages/conversation.php';
+    require __DIR__ . '/payments/payment.php';
 });
