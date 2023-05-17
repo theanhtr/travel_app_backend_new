@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->string('payment_id') -> nullable();
+        Schema::table('popular_destinations', function (Blueprint $table) {
+            $table->string('popular_destination_name');
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Reverse the migrations
      */
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('payment_id');
+            $table->dropColumn('popular_destination_name');
         });
     }
 };

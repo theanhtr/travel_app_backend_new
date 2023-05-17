@@ -33,7 +33,7 @@ class PopularDestinationController extends Controller
 
         foreach($populars_destination as $popular_destination) {
             $popular_destination['image_path'] = asset('images/popular_destination/' . $popular_destination->image_path);
-            $popular_destination['province_name'] = Province::find($popular_destination -> province_id)->name ?? 'No name';
+            $popular_destination['province_name'] = $popular_destination -> popular_destination_name;
             $popular_destination['is_like'] = $user -> popularDestinationsLike() -> find($popular_destination -> id) ? 1 : 0;
         }
 

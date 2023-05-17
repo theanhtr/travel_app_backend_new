@@ -40,9 +40,27 @@ class AmenitySeeder extends Seeder
         ]);
 
         Amenity::create([
-            'name' => 'Baggage',
-            'font_awesome_class' => 'fa-solid fa-suitcase-rolling',
-            'role_amenity_id' => GetRoleAmenityIdHelper::getFlightRoleAmenityId(),
+            'name' => 'Digital TV',
+            'font_awesome_class' => 'fa-regular fa-tv-retro',
+            'role_amenity_id' => GetRoleAmenityIdHelper::getHotelRoleAmenityId(),
+        ]);
+
+        Amenity::create([
+            'name' => 'Parking Area',
+            'font_awesome_class' => 'fa-solid fa-circle-parking',
+            'role_amenity_id' => GetRoleAmenityIdHelper::getHotelRoleAmenityId(),
+        ]);
+
+        Amenity::create([
+            'name' => 'Swimming Pool',
+            'font_awesome_class' => 'fa-solid fa-person-swimming',
+            'role_amenity_id' => GetRoleAmenityIdHelper::getHotelRoleAmenityId(),
+        ]);
+
+        Amenity::create([
+            'name' => 'Car Rental',
+            'font_awesome_class' => 'fa-duotone fa-car',
+            'role_amenity_id' => GetRoleAmenityIdHelper::getHotelRoleAmenityId(),
         ]);
     }
 }
