@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('room_id');
             $table->string('payment_id') -> nullable();
         });
     }
@@ -24,7 +23,6 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('payment_id');
-            $table->integer('room_id');
         });
     }
 };
