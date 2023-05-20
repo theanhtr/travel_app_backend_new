@@ -33,7 +33,7 @@ class RoomController extends Controller
 
         for($i = 0; $i < $request -> quantity; $i ++) {
             $typeRoom -> rooms() -> create([
-                "availablity" => true
+                "created_at" => now()
             ]);
         }
         
