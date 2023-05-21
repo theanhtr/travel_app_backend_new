@@ -8,13 +8,16 @@ use App\Helper\HotelOrderHelper;
 use App\Models\Hotel;
 use App\Models\Order;
 use App\Http\Requests\StorePaymentRequest;
+use App\Http\Requests\StorePaymentClientRequest;
 use App\Http\Requests\StoreHotelOrderRequest;
 use App\Http\Requests\HotelOrderCancelRequest;
 use App\Models\OrderStatus;
 use App\Models\User;
 use App\Traits\HttpResponse;
 use DateTime;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -86,6 +89,8 @@ class OrderController extends Controller
             ]);
         }
 
+        $order -> save();
+
         return $this->success('Create order complete, waiting payment', $order);
     }
 
@@ -99,6 +104,7 @@ class OrderController extends Controller
 
         foreach($orders as $order) {
             $order['order_status_name'] = OrderStatus::find($order->order_status_id)->name;
+            $order['order_id'] = $order -> id;
         }
 
         return $this->success('Get all complete', $orders);
@@ -120,6 +126,7 @@ class OrderController extends Controller
         }
 
         $order['order_status_name'] = OrderStatus::find($order->order_status_id)->name;
+        $order['order_id'] = $order -> id;
 
         return $this->success('Get complete', $order);
     }
@@ -202,6 +209,7 @@ class OrderController extends Controller
             
             $order -> order_status_id = 2;
             $order -> payment_id = $bill -> id;
+            $order['order_id'] = $order -> id;
             $order -> save();
             
             return $this->success('ok', $order);
@@ -239,6 +247,9 @@ class OrderController extends Controller
             ]);
     
             HotelOrderHelper::cancelHotelOrder($order);
+
+            $order['order_id'] = $order -> id;
+            $order -> save();
             
             return $this->success('Order canceled', $order);
         } catch (\Exception $e) {
@@ -253,7 +264,57 @@ class OrderController extends Controller
          */
 
         $orders_need_review = $user -> orders() -> where('order_status_id', '=', GetOrderStatusIdHelper::getAwaitingFeedbackOrderStatusId()) -> get();
+        foreach($orders_need_review as $order) {
+            $order['order_status_name'] = OrderStatus::find($order->order_status_id)->name;
+            $order['order_id'] = $order -> id;
+        }
 
         return $this->success('Get ok', $orders_need_review);
+    }
+
+    public function paymentClient(StorePaymentClientRequest $request) {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
+        $order = $user -> orders() -> find($request -> order_id);
+        /**
+         * @var Order $order
+         */
+        
+        if(!$order) {
+            return $this -> failure('Order not found');
+        }
+
+        if($order -> order_status_id != GetOrderStatusIdHelper::getUnpaidOrderStatusId()) {
+            return $this -> failure('Order status not true');
+        }
+
+        if($order -> time_order < now()) {
+            return $this -> failure('Payment timeout');
+        }
+
+        $order -> order_status_id = 2;
+        $order['order_id'] = $order -> id;
+        $order -> save();
+        
+        return $this->success("Payment successfully");
+    }
+
+    public function orderStatistic() {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
+        $this->authorize('viewOrderStatistic', Order::class);
+        
+        $sumWithMonth = DB::table('orders') 
+                            ->select(DB::raw("DATE_FORMAT(check_in_date, '%m-%Y') AS month_year, SUM(total_price) as total_payment"))
+                            ->groupBy('month_year')
+                            ->get();
+        
+        return $this->success('ok', $sumWithMonth);
     }
 }

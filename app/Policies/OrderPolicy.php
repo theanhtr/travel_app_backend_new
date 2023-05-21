@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helper\CheckRoleAdmin;
 use App\Helper\GetRoleIdHelper;
 use App\Models\Order;
 use App\Models\User;
@@ -12,9 +13,13 @@ class OrderPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewOrderStatistic(User $user): bool
     {
-        //
+        if (CheckRoleAdmin::checkRoleAdmin($user)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
