@@ -18,7 +18,7 @@ class AmenityController extends Controller
     {
         $this->authorize('viewAny', Amenity::class);
 
-        return response()->json(Amenity::paginate(15), 200);
+        return response()->json(Amenity::get(), 200);
     }
 
     /**

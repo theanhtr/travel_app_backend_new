@@ -82,6 +82,12 @@ class ReviewController extends Controller
     }
 
     public function allHotelReview($hotel_id) {
+        $user = Auth::user();
+
+        /**
+         * @var User $user
+         */
+
         $hotel = Hotel::find($hotel_id);
 
         if(!$hotel) {
@@ -90,6 +96,12 @@ class ReviewController extends Controller
 
         $hotel_reviews = GetHotelReviews::getHotelReviews($hotel);
         
+        foreach($hotel_reviews as $hotel_review) {
+            $user_like = $user->likeReviews()->wherePivot('review_id', $hotel_review->id);
+            $hotel_review['is_like'] = $user_like -> exists() ?  $user_like -> first() -> pivot -> is_like  : null;
+            $hotel_review['is_report'] = $user -> reportReviews() -> wherePivot('review_id', $hotel_review->id) -> exists() ? 1 : 0;
+        }
+
         $reviews_response['reviews'] = $hotel_reviews;
 
         $reviews_response['count_rating'] = $hotel -> reviews() -> count();
@@ -228,3 +240,8 @@ class ReviewController extends Controller
         return $this -> success('Report ok');
     }
 }
+
+
+
+
+ 

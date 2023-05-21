@@ -20,7 +20,13 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function() {
 
         Route::post('/payment', [App\Http\Controllers\OrderController::class, 'payment'])
                 -> name('payment'); 
+        
+        Route::post('/payment-client', [App\Http\Controllers\OrderController::class, 'paymentClient'])
+                -> name('payment-client'); 
                 
         Route::post('/paid-hotel-cancel/{order_id}', [App\Http\Controllers\OrderController::class, 'paidHotelCancel'])
                 ->name('paidHotelCancel');
+
+        Route::get('/statistic', [App\Http\Controllers\OrderController::class, 'orderStatistic'])
+        ->name('orderStatistic');
 });
