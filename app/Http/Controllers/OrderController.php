@@ -209,7 +209,6 @@ class OrderController extends Controller
             
             $order -> order_status_id = 2;
             $order -> payment_id = $bill -> id;
-            $order['order_id'] = $order -> id;
             $order -> save();
             
             return $this->success('ok', $order);
@@ -296,7 +295,6 @@ class OrderController extends Controller
         }
 
         $order -> order_status_id = 2;
-        $order['order_id'] = $order -> id;
         $order -> save();
         
         return $this->success("Payment successfully");
