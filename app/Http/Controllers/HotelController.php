@@ -208,6 +208,6 @@ class HotelController extends Controller
         
         $myHotel -> amenities() -> detach($id_amenities);
 
-        return $this->failure("Delete success");
+        return $this->success("Delete success");
     }
 }

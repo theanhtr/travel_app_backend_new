@@ -70,6 +70,10 @@ class Hotel extends Model
              $hotel->images->each(function($image){
                 $image->delete();
              });
+
+             $hotel->reviews->each(function($review){
+                $review->delete();
+             });
         });
     }
 }
