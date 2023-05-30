@@ -164,6 +164,23 @@ class SearchController extends Controller
     public function searchHotelsWithFulltext(SearchHotelsWithFulltextRequest $request) {
         $hotels = Hotel::search($request -> search_name) -> get();
 
+        foreach($hotels as $hotel) {
+            $hotel['images'] = ImageGetHelper::imageGetHelper($hotel);
+            $hotel['count_review'] = $hotel -> reviews() -> count();
+
+            $address = Address::find($hotel -> address_id);
+
+            if($address) {
+                $addressResponse = array();
+                $addressResponse['specific_address'] = $address -> specific_address;
+                $addressResponse['province'] = Province::find($address->province_id)->name;
+                $addressResponse['district'] = District::find($address->district_id)->name;
+                $addressResponse['sub_district'] = SubDistrict::find($address->sub_district_id)->name;
+            }
+
+            $hotel['address'] = $addressResponse;
+        }
+
         return $this->success('Search ok', $hotels);
     }
 }
