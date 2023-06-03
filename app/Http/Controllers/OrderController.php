@@ -12,6 +12,7 @@ use App\Http\Requests\StorePaymentClientRequest;
 use App\Http\Requests\StoreHotelOrderRequest;
 use App\Http\Requests\HotelOrderCancelRequest;
 use App\Models\OrderStatus;
+use App\Models\TypeRoom;
 use App\Models\User;
 use App\Traits\HttpResponse;
 use DateTime;
@@ -105,6 +106,14 @@ class OrderController extends Controller
         foreach($orders as $order) {
             $order['order_status_name'] = OrderStatus::find($order->order_status_id)->name;
             $order['order_id'] = $order -> id;
+
+            $hotel = Hotel::find($order -> hotel_id);
+            $order['hotel_name'] = $hotel -> name;
+            
+            $type_room = TypeRoom::find($order -> type_room_id);
+            $order['type_room_name'] = $type_room -> name;
+            $order['type_room_size'] = $type_room -> room_size;
+            $order['type_room_number_of_beds'] = $type_room -> number_of_beds;
         }
 
         return $this->success('Get all complete', $orders);
