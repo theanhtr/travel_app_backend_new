@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 30, 2023 lúc 05:44 PM
+-- Thời gian đã tạo: Th6 05, 2023 lúc 02:25 AM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.1.17
 
@@ -1300,6 +1300,7 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('606396bc16eb8d1ac28c787543b6fd9bf0909ca9e8f2a359a078d47eadbdbfd55808d032355c745a', 24, '993028e6-58a9-44ec-a410-91595d6a3900', 'chien9pm@gmail.com', '[]', 0, '2023-05-17 12:11:02', '2023-05-17 12:11:02', '2023-06-16 19:11:02'),
 ('60912976fb71eac05c31d42927c33bb14500a124d42caf3ee00c926e677d062df0e4700ff0ae183a', 1, '993028e6-58a9-44ec-a410-91595d6a3900', 'theanh090602@gmail.com', '[]', 0, '2023-05-22 02:27:56', '2023-05-22 02:27:56', '2023-06-21 09:27:56'),
 ('639ff458030d62d5586ee64b0daec5ffaab8e70a11c0f4f780fd0a1b4da5e37acb6edd2d60fabe0f', 28, '993028e6-58a9-44ec-a410-91595d6a3900', 'hungk19elqd@gmail.com', '[]', 0, '2023-05-22 00:43:08', '2023-05-22 00:43:08', '2023-06-21 07:43:08'),
+('6968f6be709a62466a359f1fe3e6544c00f59a2ab31f56489ee210c1c81a604ad87f1ac9a34f69ea', 28, '993028e6-58a9-44ec-a410-91595d6a3900', 'hungk19elqd@gmail.com', '[]', 0, '2023-06-04 09:25:49', '2023-06-04 09:25:50', '2023-07-04 16:25:49'),
 ('6a50ac14ae405d858f212bcd48f082efb3b36ea7e082c1fb8fa4310d25f6270366997e294ad61de7', 37, '993028e6-58a9-44ec-a410-91595d6a3900', 'customer3@gmail.com', '[]', 0, '2023-05-25 05:55:40', '2023-05-25 05:55:40', '2023-06-24 12:55:40'),
 ('6df80daa292755812e4f240e01eae905662b1a88d72e77184a2898602ec7efefa508ede81712658a', 23, '993028e6-58a9-44ec-a410-91595d6a3900', 'hotel15@gmail.com', '[]', 0, '2023-05-20 14:06:59', '2023-05-20 14:06:59', '2023-06-19 21:06:59'),
 ('71e0ec0c10bed24f01b52582e93a52a442b4fd6d4e4aaf51b41aa86a5dd3779644446c8fd50b21ef', 9, '993028e6-58a9-44ec-a410-91595d6a3900', 'hotel1@gmail.com', '[]', 0, '2023-05-23 16:38:32', '2023-05-23 16:38:32', '2023-06-22 23:38:32'),
@@ -1342,6 +1343,7 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('ba3bdbceaa553d1c7a1f0a427b2e52383f24e184d2789457e12a996a171cf9f53d35246f6f27a95d', 1, '993028e6-58a9-44ec-a410-91595d6a3900', 'theanh090602@gmail.com', '[]', 0, '2023-05-17 11:06:46', '2023-05-17 11:06:46', '2023-06-16 18:06:46'),
 ('bb1bea947d28e48f097e201c6f2ad60959384ecfdeec91fd989c34342a55ea8838faa5147743c734', 37, '993028e6-58a9-44ec-a410-91595d6a3900', 'customer3@gmail.com', '[]', 0, '2023-05-28 12:51:37', '2023-05-28 12:51:37', '2023-06-27 19:51:37'),
 ('bfa9271209c7664a4165de95741a6186922ed92b47824eeca8f43595fda94346a41798ceb2640d19', 37, '993028e6-58a9-44ec-a410-91595d6a3900', 'customer3@gmail.com', '[]', 0, '2023-05-22 00:42:19', '2023-05-22 00:42:19', '2023-06-21 07:42:19'),
+('c110e775f6404309c35017da33c8fc2d0e303328a1b59cd52cf3d6447e21d8396e995137fe44ebd4', 28, '993028e6-58a9-44ec-a410-91595d6a3900', 'hungk19elqd@gmail.com', '[]', 0, '2023-06-04 13:17:49', '2023-06-04 13:17:49', '2023-07-04 20:17:49'),
 ('c27b046d69d91c34f55c5bb5b1b668b8e44be091a381a002f924d30b5f428258765676ec58bf58fc', 9, '993028e6-58a9-44ec-a410-91595d6a3900', 'hotel1@gmail.com', '[]', 0, '2023-05-17 11:13:28', '2023-05-17 11:13:29', '2023-06-16 18:13:28'),
 ('c27b17cde2f564e542a304c0c32b46e01cd69f4eaf845d5382ebdd19bbff17f596c03ee47acab888', 25, '993028e6-58a9-44ec-a410-91595d6a3900', 'lehuyhaianh0808@gmail.com', '[]', 0, '2023-05-17 15:35:44', '2023-05-17 15:35:44', '2023-06-16 22:35:44'),
 ('c2f821fd599ef834dbf2ab59eb2280143107910981696a06371a0505a74cb14d46aaca971cf7b297', 25, '993028e6-58a9-44ec-a410-91595d6a3900', 'lehuyhaianh0808@gmail.com', '[]', 0, '2023-05-17 15:38:02', '2023-05-17 15:38:02', '2023-06-16 22:38:02'),
@@ -1491,7 +1493,8 @@ INSERT INTO `orders` (`id`, `customer_name`, `email_contact`, `phone_number_cont
 (6, 'Hưng', 'hungk19elqd@gmail.com', 977529350, NULL, 300, 1, '2023-05-22 15:19:23', 1, '2023-05-22 15:33:00', '2023-05-22 16:59:00', 2, 28, 21, 6, '2023-05-22 15:19:05', '2023-05-22 15:19:23', NULL),
 (7, 'Hưng', 'hungk19elqd@gmail.com', 977529350, NULL, 600, 2, '2023-05-22 15:20:49', 2, '2023-05-22 15:35:00', '2023-05-23 16:59:00', 2, 28, 21, 6, '2023-05-22 15:20:34', '2023-05-22 15:20:49', NULL),
 (8, 'Hà Quang', 'hunguet2701@gmail.com', 977529350, NULL, 80, 1, '2023-05-23 16:41:00', 1, '2023-05-23 16:55:00', '2023-05-23 16:59:00', 2, 39, 38, 12, '2023-05-23 16:40:32', '2023-05-23 16:41:00', NULL),
-(9, 'Hưng', 'hungk19elqd@gmail.com', 977529350, NULL, 200, 1, '2023-05-28 11:44:49', 1, '2023-05-28 11:59:00', '2023-05-28 16:59:00', 2, 28, 45, 14, '2023-05-28 11:44:29', '2023-05-28 11:44:49', NULL);
+(9, 'Hưng', 'hungk19elqd@gmail.com', 977529350, NULL, 200, 1, '2023-05-28 11:44:49', 1, '2023-05-28 11:59:00', '2023-05-28 16:59:00', 2, 28, 45, 14, '2023-05-28 11:44:29', '2023-05-28 11:44:49', NULL),
+(10, 'Hưng', 'hungk19elqd@gmail.com', 977529350, NULL, 80, 1, '2023-06-04 14:38:12', 1, '2023-06-04 14:52:00', '2023-06-04 16:59:00', 2, 28, 38, 12, '2023-06-04 14:37:54', '2023-06-04 14:38:12', NULL);
 
 -- --------------------------------------------------------
 
@@ -3360,7 +3363,8 @@ INSERT INTO `room_order` (`id`, `order_id`, `room_id`) VALUES
 (9, 7, 542),
 (10, 7, 543),
 (11, 8, 1052),
-(12, 9, 1261);
+(12, 9, 1261),
+(13, 10, 1051);
 
 -- --------------------------------------------------------
 
@@ -3394,7 +3398,8 @@ INSERT INTO `room_reservation_times` (`id`, `check_in_date`, `check_out_date`, `
 (9, '2023-05-22 15:35:00', '2023-05-23 16:59:00', 542, '2023-05-22 15:20:34', '2023-05-22 15:20:34', 7),
 (10, '2023-05-22 15:35:00', '2023-05-23 16:59:00', 543, '2023-05-22 15:20:34', '2023-05-22 15:20:34', 7),
 (11, '2023-05-23 16:55:00', '2023-05-23 16:59:00', 1052, '2023-05-23 16:40:32', '2023-05-23 16:40:32', 8),
-(12, '2023-05-28 11:59:00', '2023-05-28 16:59:00', 1261, '2023-05-28 11:44:29', '2023-05-28 11:44:29', 9);
+(12, '2023-05-28 11:59:00', '2023-05-28 16:59:00', 1261, '2023-05-28 11:44:29', '2023-05-28 11:44:29', 9),
+(13, '2023-06-04 14:52:00', '2023-06-04 16:59:00', 1051, '2023-06-04 14:37:54', '2023-06-04 14:37:54', 10);
 
 -- --------------------------------------------------------
 
@@ -14517,8 +14522,8 @@ CREATE TABLE `user_like_hotels` (
 INSERT INTO `user_like_hotels` (`id`, `user_id`, `hotel_id`, `created_at`, `updated_at`) VALUES
 (1, 24, 6, NULL, NULL),
 (4, 1, 10, NULL, NULL),
-(5, 28, 12, NULL, NULL),
-(6, 39, 12, NULL, NULL);
+(6, 39, 12, NULL, NULL),
+(9, 28, 12, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -14932,7 +14937,7 @@ ALTER TABLE `oauth_personal_access_clients`
 -- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT cho bảng `order_statuses`
@@ -15004,13 +15009,13 @@ ALTER TABLE `rooms`
 -- AUTO_INCREMENT cho bảng `room_order`
 --
 ALTER TABLE `room_order`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT cho bảng `room_reservation_times`
 --
 ALTER TABLE `room_reservation_times`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT cho bảng `sort_by`
@@ -15070,7 +15075,7 @@ ALTER TABLE `user_information`
 -- AUTO_INCREMENT cho bảng `user_like_hotels`
 --
 ALTER TABLE `user_like_hotels`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT cho bảng `user_like_popular_destinations`

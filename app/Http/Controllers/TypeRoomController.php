@@ -37,6 +37,7 @@ class TypeRoomController extends Controller
         foreach($typeRooms as $typeRoom) {
             $amenities = $typeRoom->amenities()->get();
             $typeRoom["amenities"] = $amenities;
+            $typeRoom["room_quantity"] = $typeRoom -> rooms() -> count();
         }
 
         return $this->success('Get complete', $typeRooms);
@@ -97,7 +98,7 @@ class TypeRoomController extends Controller
 
         ChangeHotelMinMaxPrice::changeHotelMinMaxPrice($user);
 
-        return $this->success('Type room of hotel is stored');
+        return $this->success('Type room of hotel is stored', $typeRoom);
     }
 
     /**
