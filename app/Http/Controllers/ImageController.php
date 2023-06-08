@@ -266,7 +266,7 @@ class ImageController extends Controller
          * @var User $user
          */
 
-        $myHotel = $user->hotel();
+        $myHotel = $user->hotel()->first();
 
         /**
          * @var Hotel $myHotel
@@ -275,15 +275,15 @@ class ImageController extends Controller
         if(!$myHotel) {
             return $this->failure("Hotel of manager isn't exist");
         }
-
+        
         $images_id = SplitIdInString::splitIdInString($request->images_id);
-
+        
         $typeRoom = $myHotel -> typeRooms()->find($type_room_id);
-
+        
         /**
          * @var TypeRoom $typeRoom
          */
-
+        
         if(!$typeRoom) {
             return $this->failure('Type room isnt exist');
         }

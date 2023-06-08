@@ -17,7 +17,8 @@ class TypeRoom extends Model
         'name', 
         'description', 
         'price',
-        'occupancy'
+        'occupancy',
+        'room_size'
     ];
 
     public function hotel():BelongsTo
