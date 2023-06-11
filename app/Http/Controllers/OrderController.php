@@ -12,6 +12,7 @@ use App\Http\Requests\StorePaymentClientRequest;
 use App\Http\Requests\StoreHotelOrderRequest;
 use App\Http\Requests\HotelOrderCancelRequest;
 use App\Models\OrderStatus;
+use App\Models\Review;
 use App\Models\TypeRoom;
 use App\Models\User;
 use App\Traits\HttpResponse;
@@ -114,9 +115,29 @@ class OrderController extends Controller
             $order['type_room_name'] = $type_room -> name;
             $order['type_room_size'] = $type_room -> room_size;
             $order['type_room_number_of_beds'] = $type_room -> number_of_beds;
+            $order['reviewed'] = count(Review::where('order_id', $order->id) -> get()) !== 0 ? true : false;
         }
 
         return $this->success('Get all complete', $orders);
+    }
+
+    public function checkNeedReview() {
+        $user = Auth::user();
+        /**
+         * @var User $user
+         */
+
+        $orders = $user->orders()->get();
+        $need_review = false;
+
+        foreach($orders as $order) {
+            $order['review'] = Review::where('order_id', $order->id) -> get();
+            if (count(Review::where('order_id', $order->id) -> get()) === 0 && $order->order_status_id === 8) {
+                $need_review = true;
+            }
+        }
+
+        return $this->success('Ok', $need_review);
     }
 
     public function showHotelOrder($order_id) {

@@ -68,4 +68,3 @@ class Order extends Model
         return $this->hasOne(Review::class);
     }
 }
-

@@ -6,6 +6,9 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function() {
         Route::get('/get-all-hotel-order', [App\Http\Controllers\OrderController::class, 'getAllHotelOrder'])
                 ->name('getAllHotelOrder');
 
+        Route::get('/check-need-review', [App\Http\Controllers\OrderController::class, 'checkNeedReview'])
+                ->name('checkNeedReview');
+
         Route::get('/show-hotel-order/{order_id}', [App\Http\Controllers\OrderController::class, 'showHotelOrder'])
                 ->name('showHotelOrder');
         
